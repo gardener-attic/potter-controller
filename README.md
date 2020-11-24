@@ -23,4 +23,5 @@ The current version of the Potter Controller has the following limitations:
 If you encounter any problems using Potter or if you have feature requests, please don't hesitate to contact us via both GitHub repositories. We will offer further methods for getting in touch with us, which you will find here.
 
 ## Contributing
-The Potter Controller is offered as Open Source, using the Apache 2.0 license model.
+The Potter Controller is offered as Open Source, using the Apache 2.0 license model.<br>
+If you would like to contribute, please check out the [Gardener contributor guide](https://gardener.cloud/documentation/contribute/).
