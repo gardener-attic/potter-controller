@@ -1,0 +1,142 @@
+# Hub-Controller deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+        {{ .Values.affinityLabel.key }}: {{ .Values.affinityLabel.value }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          args:
+            - --kubeconfig=/usr/gardener-secret/kubeconfig
+            - --apprepo-kubeconfig=/usr/apprepo-secret/apprepokubeconfig
+            - --reconcile-interval-minutes={{ .Values.deploymentArgs.reconcileIntervalMinutes }}
+            - --restart-kapp-interval-minutes={{ .Values.deploymentArgs.restartKappMinutes }}
+            - --loglevel={{ .Values.deploymentArgs.loglevel }}
+            - --configtypes={{ .Values.deploymentArgs.configTypes }}
+            - --extended-log-enabled={{ .Values.deploymentArgs.extendedLogEnabled }}
+            - --tokenreview-enabled={{ .Values.deploymentArgs.tokenReviewEnabled }}
+            - --token-issuer={{ .Values.deploymentArgs.tokenIssuer }}
+            - --landscaper-enabled={{ .Values.deploymentArgs.landscaperEnabled }}
+            {{- if .Values.auditLogConfig }}
+            - --audit-log=true
+            {{- end }}
+          command:
+            - ./manager
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /availability
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /availability
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          env:
+            - name: POD_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: APPREPO_NAMESPACE
+              value: {{.Values.namespaces.appRepo}}
+            {{- if .Values.availabilityCheck }}
+            - name: AVAILABILITY_CHECK
+              value: '{{.Values.availabilityCheck.configJSON}}'
+            {{- end }}
+            - name: MAX_THREADS_DEPLOYMENT_CONTROLLER
+              value: '{{.Values.threads.deploymentController}}'
+            - name: MAX_THREADS_CLUSTER_BOM_CONTROLLER
+              value: '{{.Values.threads.clusterBomController}}'
+            - name: MAX_THREADS_CLUSTER_BOM_STATE_CONTROLLER
+              value: '{{.Values.threads.clusterBomStateController}}'
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{.Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /usr/gardener-secret
+              name: gardener
+              readOnly: true
+            - mountPath: /usr/apprepo-secret
+              name: apprepo
+              readOnly: true
+            {{- if .Values.secretConfig.hubImagePullSecret }}
+            - mountPath: /usr/image-pull-secret
+              name: image-pull-secret
+              readOnly: true
+            {{- end }}  
+          ports:
+            - name: http
+              containerPort: 8085
+              protocol: TCP
+            - name: health-server
+              containerPort: 8081
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.auditLogConfig }}
+        - name: {{.Values.auditlogImage.name}}
+          command:
+            - ./auditlog
+          args:
+            - --loglevel={{ .Values.deploymentArgs.loglevel }}
+          image: "{{.Values.auditlogImage.registry}}/{{ .Values.auditlogImage.repository }}:{{ .Values.auditlogImage.tag }}"
+          imagePullPolicy: {{ .Values.auditlogImage.pullPolicy }}
+          env:
+            - name: AUDITLOG
+              value: '{{.Values.auditLogConfig.auditLogServiceKey}}'
+        {{- end }}        
+      volumes:
+      - name: gardener
+        secret:
+          secretName: secret-cluster-kubeconfig
+      - name: apprepo
+        secret:
+          secretName: apprepo-cluster-kubeconfig
+      {{- if .Values.secretConfig.hubImagePullSecret }}
+      - name: image-pull-secret
+        secret:
+          secretName: hubsec-image-pull-secrets-creds
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,20 @@
+apiVersion: kubeapps.com/v1alpha1
+kind: AppRepository
+metadata:
+  labels:
+    app: hub-kubeapps-internal-apprepository-controller
+    chart: kubeapps-0.12.0-dev
+    heritage: Helm
+    release: hub
+  name: stable
+  namespace: default
+  resourceVersion: "11043891"
+  selfLink: /apis/kubeapps.com/v1alpha1/namespaces/hub/apprepositories/stable
+  uid: 77db7316-f1d9-4f9c-8f5c-8e93c64960d3
+spec:
+  syncJobPodTemplate:
+    spec:
+      imagePullSecrets:
+      - name: artifactory
+  type: helm
+  url: https://kubernetes-charts.storage.googleapis.com

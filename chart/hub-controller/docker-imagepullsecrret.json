@@ -1,0 +1,14 @@
+{
+  "auths": {
+    "https://eu.gcr.io": {
+      "username": "_json_key",
+      "password": "TODO mysecretfoo",
+      "email": "controller-read-2@sap-gcp-k8s-wm-live.iam.gserviceaccount.com",
+      "auth": "X2pzb25fa2V5OlRPRE8gbXlzZWNyZXRmb28="
+    }
+  }
+}
+
+
+echo "X2pzb25fa2V5OlRPRE8gbXlzZWNyZXRmb28=" | base64 --decode
+_json_key:TODO mysecretfoo

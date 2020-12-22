@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub-service
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8085
+  selector:
+    app: controller
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hub-ingress
+  labels:
+    garden.sapcloud.io/purpose: managed-cert
+  annotations:
+    nginx.ingress.kubernetes.io/limit-connections: "100"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/limit-rate-after: "10000000" # 10MB
+    nginx.ingress.kubernetes.io/limit-rate: "100"
+spec:
+  tls:
+    - hosts:
+      - hub.ingress.cont.hubforplay.shoot.canary.k8s-hana.ondemand.com
+      secretName: tls-cert
+  rules:
+    - host: hub.ingress.cont.hubforplay.shoot.canary.k8s-hana.ondemand.com
+      http:
+        paths:
+          - path: /checkClusterBom
+            backend:
+              serviceName: hub-service
+              servicePort: 80

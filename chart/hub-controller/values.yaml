@@ -1,0 +1,221 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+deploymentArgs:
+  reconcileIntervalMinutes: 30
+  restartKappMinutes: 360
+  loglevel: "warning"
+  # supported deployment types
+  configTypes: "helm,kapp"
+  extendedLogEnabled: false
+  # flag to switch validation of bearer tokens on/off of requests to the admission webhook
+  tokenReviewEnabled: false
+  # URL for the validation of bearer tokens of requests to the admission webhook
+  tokenIssuer: "https://..."
+  landscaperEnabled: false
+
+replicaCount: 2
+
+secretConfig:
+  # kubeconfig for reading the apprepos
+  apprepoCluster: |
+    dummy
+
+  # kubeconfig for reading secrets and CRs from the OIDC cluster
+  secretCluster: |
+    dummy
+
+  secretDeletionKey: dummy # internal parameter - do not change
+
+  # base64 encoded imagepullsecret for using a private image registry in helm charts ("hubsec").
+  # hubImagePullSecret:
+
+namespaces:
+  # namespace of apprepository CRs
+  appRepo: "hub"
+
+image:
+  registry: eu.gcr.io
+  repository: $image_repo
+  tag: $image_tag
+  pullPolicy: IfNotPresent
+
+auditlogImage:
+  name: auditlogsap
+  registry: eu.gcr.io
+  repository: $auditlog_image_repo
+  tag: $auditlog_image_tag
+  pullPolicy: IfNotPresent
+
+kappImage:
+  registry: eu.gcr.io
+  repository: $kappcontroller_image_repo
+  tag: $kappcontroller_image_tag
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - gcr
+
+kappController:
+  enablePprof: true
+
+# Uncomment to activate auditlog.
+# The auditLogServiceKey gets passed in as an env variable to the auditlog container.
+# auditLogConfig:
+#   auditLogServiceKey: '{ "myConfigProp": "test" }'
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  ports:
+  - name: admission-webhook
+    protocol: TCP
+    port: 80
+    targetPort: 8085
+  - name: health-server
+    protocol: TCP
+    port: 81
+    targetPort: 8081
+
+ingress:
+  enabled: true
+  # use the cert manager provided by Gardener to retrieve certificates from Let's Encrypt
+  gardenerCertManager: false
+  gardenerDNS: false
+
+  host: hub-controller.local
+
+  # Set this to true in order to enable TLS on the ingress record
+  tlsEnabled: true
+
+  ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+  tlsSecret: hub.tls-secret
+
+  health:
+    annotations:
+      nginx.ingress.kubernetes.io/limit-connections: "100"
+      nginx.ingress.kubernetes.io/limit-rate: "100"
+      nginx.ingress.kubernetes.io/limit-rate-after: "10000000"
+      nginx.ingress.kubernetes.io/limit-rps: "10"
+      # type of authentication
+      nginx.ingress.kubernetes.io/auth-type: basic
+      # name of the secret that contains the user/password definitions
+      nginx.ingress.kubernetes.io/auth-secret: health-secret
+      # message to display with an appropriate context why the authentication is required
+      nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+
+    user: admin
+    password: admin
+    
+    paths:
+    - path: /availability
+      servicePort: 81
+
+  default:
+    annotations:
+      nginx.ingress.kubernetes.io/limit-connections: "100"
+      nginx.ingress.kubernetes.io/limit-rate: "100"
+      nginx.ingress.kubernetes.io/limit-rate-after: "10000000"
+      nginx.ingress.kubernetes.io/limit-rps: "10"
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    paths:
+      - path: /checkClusterBom
+        servicePort: 80
+      - path: /checkSecret
+        servicePort: 80
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+kappresources:
+  limits:
+    memory: 2Gi
+    cpu: 1000m
+  requests:
+    memory: 1Gi
+    cpu: 500m
+
+nodeSelector: {}
+
+tolerations: []
+
+affinityLabel:
+  key : hub.k8s.sap.com/antiaffinity
+  value: hub-controller
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: hub.k8s.sap.com/antiaffinity
+              operator: In
+              values:
+                - hub-controller
+        topologyKey: kubernetes.io/hostname
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: hub.k8s.sap.com/antiaffinity
+                operator: In
+                values:
+                  - hub-controller
+          topologyKey: topology.kubernetes.io/zone
+
+threads:
+  deploymentController: 30
+  clusterBomController: 10
+  clusterBomStateController: 10
+
+landscaper:
+  registry: eu.gcr.io
+  repository: sap-gcp-k8s-wm-live/landscaper
+  tag: 0.0.4
+  pullPolicy: IfNotPresent
+
+  registrySecrets: # contains optional oci secrets
+    blueprints: {}
+    #      <name>: <docker config json>
+    components: {}
+    #      <name>: <docker config json>
+
+  deployers: []
+  #  - container
+  #  - helm
+  #  - mock

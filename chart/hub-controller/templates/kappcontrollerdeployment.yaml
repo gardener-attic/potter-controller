@@ -1,0 +1,52 @@
+# kapp-controller version 0.8.0 from https://github.com/k14s/kapp-controller/releases/download/v0.8.0/release.yml with some adoptions
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kapp-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kapp-controller
+  template:
+    metadata:
+      labels:
+        app: kapp-controller
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range . }}
+        - name: {{ . }}
+      {{- end }}
+    {{- end }}
+      containers:
+        - args:
+          - --kubeconfig=/usr/gardener-secret/kubeconfig
+          - --dangerous-enable-pprof={{ .Values.kappController.enablePprof }}
+          env:
+            - name: KAPPCTRL_MEM_TMP_DIR
+              value: /etc/kappctrl-mem-tmp
+          image: "{{.Values.kappImage.registry}}/{{ .Values.kappImage.repository }}:{{ .Values.kappImage.tag }}"
+          imagePullPolicy: {{ .Values.kappImage.pullPolicy }}
+          name: kapp-controller
+          resources:
+            {{- toYaml .Values.kappresources | nindent 12 }}
+          securityContext:
+            runAsGroup: 2000
+            runAsUser: 1000
+          volumeMounts:
+            - mountPath: /etc/kappctrl-mem-tmp
+              name: template-fs
+            - mountPath: /usr/gardener-secret
+              name: gardener
+              readOnly: true
+      securityContext:
+        fsGroup: 3000
+      volumes:
+        - emptyDir:
+            medium: Memory
+          name: template-fs
+        - name: gardener
+          secret:
+            secretName: secret-cluster-kubeconfig

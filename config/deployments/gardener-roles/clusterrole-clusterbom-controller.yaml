@@ -1,0 +1,234 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hub.sapcloud.io:controller:hub
+rules:
+  # clusterboms
+  - apiGroups:
+      - hub.k8s.sap.com
+    resources:
+      - clusterboms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  # clusterboms/status
+  - apiGroups:
+      - hub.k8s.sap.com
+    resources:
+      - clusterboms/status
+    verbs:
+      - update
+  # clusterbomsyncs
+  - apiGroups:
+      - hub.k8s.sap.com
+    resources:
+      - clusterbomsyncs
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # clusterbomsyncs/status
+  - apiGroups:
+      - hub.k8s.sap.com
+    resources:
+      - clusterbomsyncs/status
+    verbs:
+      - update
+  # secrets
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - patch
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # kapp-controller apps
+  - apiGroups:
+      - kappctrl.k14s.io
+    resources:
+      - apps
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # kapp-controller apps/status
+  - apiGroups:
+      - kappctrl.k14s.io
+    resources:
+      - apps/status
+    verbs:
+      - update
+  # deploy item
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - deployitems
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # deploy item/status
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - deployitems/status
+    verbs:
+      - update
+  # installations
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - installations
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # installations/status
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - installations/status
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  # dataobjects
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - dataobjects
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # dataobjects/status
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - dataobjects/status
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  # executions
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - executions
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # executions/status
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - executions/status
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  # targets
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - targets
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - delete
+  # targets/status
+  - apiGroups:
+      - landscaper.gardener.cloud
+    resources:
+      - targets/status
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hub.sapcloud.io:controller:hub
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hub.sapcloud.io:controller:hub
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:serviceaccount:default:app-hub-controller
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-hub-controller
+  namespace: default # TODO edit this namespace
+
+
+#      - create
+#      - delete
+#      - deletecollection
+#      - get
+#      - list
+#      - patch
+#      - update
+#      - watch

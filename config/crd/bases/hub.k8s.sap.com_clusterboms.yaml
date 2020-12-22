@@ -1,0 +1,523 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.1-0.20200517180335-820a4a27ea84
+  creationTimestamp: null
+  name: clusterboms.hub.k8s.sap.com
+spec:
+  group: hub.k8s.sap.com
+  names:
+    kind: ClusterBom
+    listKind: ClusterBomList
+    plural: clusterboms
+    singular: clusterbom
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.secretRef
+      name: CLUSTER
+      type: string
+    - jsonPath: .status.overallState
+      name: OVERALL STATUS
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: ClusterBom is the Schema for the clusterboms API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ClusterBomSpec defines the desired state of ClusterBom
+            properties:
+              applicationConfigs:
+                items:
+                  description: ApplicationConfig defines one application to be deployed on a cluster
+                  properties:
+                    configType:
+                      maxLength: 20
+                      minLength: 1
+                      pattern: ^[0-9a-z]*$
+                      type: string
+                    exportParameters:
+                      properties:
+                        parameters:
+                          additionalProperties:
+                            type: object
+                          type: object
+                      type: object
+                    id:
+                      maxLength: 20
+                      minLength: 1
+                      pattern: ^[0-9a-z]*$
+                      type: string
+                    importParameters:
+                      items:
+                        properties:
+                          appID:
+                            type: string
+                          clusterBomName:
+                            type: string
+                          exportParamName:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - appID
+                        - clusterBomName
+                        - exportParamName
+                        - name
+                        type: object
+                      type: array
+                    internalImportParameters:
+                      properties:
+                        parameters:
+                          additionalProperties:
+                            type: object
+                          type: object
+                      type: object
+                    namedSecretValues:
+                      additionalProperties:
+                        properties:
+                          data:
+                            additionalProperties:
+                              type: string
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          internalSecretName:
+                            type: string
+                          operation:
+                            enum:
+                            - delete
+                            type: string
+                        type: object
+                      type: object
+                    noReconcile:
+                      type: boolean
+                    readyRequirements:
+                      properties:
+                        jobs:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                            type: object
+                          type: array
+                        resources:
+                          items:
+                            properties:
+                              apiVersion:
+                                type: string
+                              fieldPath:
+                                type: string
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                              resource:
+                                type: string
+                              successValues:
+                                items:
+                                  type: object
+                                type: array
+                            required:
+                            - apiVersion
+                            - fieldPath
+                            - name
+                            - namespace
+                            - resource
+                            type: object
+                          type: array
+                      type: object
+                    secretValues:
+                      properties:
+                        data:
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                        internalSecretName:
+                          type: string
+                        operation:
+                          enum:
+                          - replace
+                          - keep
+                          - delete
+                          type: string
+                      type: object
+                    typeSpecificData:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                    values:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                  type: object
+                type: array
+              autoDelete:
+                properties:
+                  clusterBomAge:
+                    format: int64
+                    type: integer
+                type: object
+              secretRef:
+                description: Name of the secret which contains the target environment data
+                maxLength: 63
+                minLength: 2
+                pattern: ^[0-9a-zA-Z][0-9a-zA-Z_.\-]*[0-9a-zA-Z]$
+                type: string
+            type: object
+          status:
+            description: ClusterBomStatus defines the observed state of ClusterBom
+            properties:
+              applicationStates:
+                items:
+                  description: ApplicationState describes the state of the deployment of an application
+                  properties:
+                    detailedState:
+                      description: DetailedState describes the detailed state of a deployment of an application
+                      properties:
+                        currentOperation:
+                          description: CurrentOperation defines the current deployment operation
+                          properties:
+                            number:
+                              description: not used anymore
+                              format: int32
+                              type: integer
+                            operation:
+                              description: not used anymore
+                              enum:
+                              - install
+                              - remove
+                              type: string
+                            time:
+                              format: date-time
+                              type: string
+                          type: object
+                        deletionTimestamp:
+                          format: date-time
+                          type: string
+                        generation:
+                          format: int64
+                          type: integer
+                        hdcConditions:
+                          items:
+                            description: HubDeploymentCondition describes the state of a hubdeployment at a certain point.
+                            properties:
+                              lastTransitionTime:
+                                description: Last time the condition transitioned from one status to another.
+                                format: date-time
+                                type: string
+                              lastUpdateTime:
+                                description: The last time this condition was updated.
+                                format: date-time
+                                type: string
+                              message:
+                                description: A human readable message indicating details about the transition.
+                                type: string
+                              reason:
+                                description: The reason for the condition's last transition.
+                                type: string
+                              status:
+                                description: Status of the condition, one of True, False, Unknown.
+                                type: string
+                              type:
+                                description: Type of hubdeploymentconfig condition.
+                                type: string
+                            required:
+                            - status
+                            - type
+                            type: object
+                          type: array
+                        lastOperation:
+                          description: LastOperation describes the last deployment operation
+                          properties:
+                            description:
+                              type: string
+                            errorHistory:
+                              properties:
+                                errorEntries:
+                                  items:
+                                    properties:
+                                      description:
+                                        type: string
+                                      time:
+                                        format: date-time
+                                        type: string
+                                    type: object
+                                  type: array
+                              type: object
+                            number:
+                              description: not used anymore
+                              format: int32
+                              type: integer
+                            numberOfTries:
+                              format: int32
+                              type: integer
+                            operation:
+                              enum:
+                              - install
+                              - remove
+                              type: string
+                            state:
+                              enum:
+                              - failed
+                              - ok
+                              type: string
+                            successGeneration:
+                              format: int64
+                              type: integer
+                            successNumber:
+                              description: not used anymore
+                              format: int32
+                              type: integer
+                            time:
+                              format: date-time
+                              type: string
+                          type: object
+                        observedGeneration:
+                          format: int64
+                          type: integer
+                        phase:
+                          type: string
+                        reachability:
+                          properties:
+                            reachable:
+                              type: boolean
+                            time:
+                              format: date-time
+                              type: string
+                          required:
+                          - reachable
+                          type: object
+                        readiness:
+                          properties:
+                            state:
+                              enum:
+                              - failed
+                              - pending
+                              - ok
+                              - unknown
+                              - notRelevant
+                              - finallyFailed
+                              type: string
+                            time:
+                              format: date-time
+                              type: string
+                          type: object
+                        typeSpecificStatus:
+                          type: object
+                      type: object
+                    id:
+                      type: string
+                    installationState:
+                      properties:
+                        conditions:
+                          items:
+                            description: Condition holds the information about the state of a resource.
+                            properties:
+                              codes:
+                                description: Well-defined error codes in case the condition reports a problem.
+                                items:
+                                  description: ErrorCode is a string alias.
+                                  type: string
+                                type: array
+                              lastTransitionTime:
+                                description: Last time the condition transitioned from one status to another.
+                                format: date-time
+                                type: string
+                              lastUpdateTime:
+                                description: Last time the condition was updated.
+                                format: date-time
+                                type: string
+                              message:
+                                description: A human readable message indicating details about the transition.
+                                type: string
+                              reason:
+                                description: The reason for the condition's last transition.
+                                type: string
+                              status:
+                                description: Status of the condition, one of True, False, Unknown.
+                                type: string
+                              type:
+                                description: DataType of the Shoot condition.
+                                type: string
+                            required:
+                            - lastTransitionTime
+                            - lastUpdateTime
+                            - message
+                            - reason
+                            - status
+                            - type
+                            type: object
+                          type: array
+                        configGeneration:
+                          type: string
+                        imports:
+                          items:
+                            description: ImportStatus hold the state of a import.
+                            properties:
+                              configGeneration:
+                                description: ConfigGeneration is the generation of the imported value.
+                                type: string
+                              configMapRef:
+                                description: ConfigMapRef is the name of the imported configmap.
+                                type: string
+                              dataRef:
+                                description: DataRef is the name of the in-cluster data object.
+                                type: string
+                              name:
+                                description: Name is the distinct identifier of the import. Can be either from data or target imports
+                                type: string
+                              secretRef:
+                                description: SecretRef is the name of the secret.
+                                type: string
+                              sourceRef:
+                                description: SourceRef is the reference to the installation where the value is imported
+                                properties:
+                                  name:
+                                    description: Name is the name of the kubernetes object.
+                                    type: string
+                                  namespace:
+                                    description: Namespace is the namespace of kubernetes object.
+                                    type: string
+                                required:
+                                - name
+                                - namespace
+                                type: object
+                              target:
+                                description: Target is the name of the in-cluster target object.
+                                type: string
+                              type:
+                                description: Type defines the kind of import. Can be either DataObject or Target
+                                type: string
+                            required:
+                            - configGeneration
+                            - name
+                            - type
+                            type: object
+                          type: array
+                        lastError:
+                          description: Error holds information about an error that occurred.
+                          properties:
+                            codes:
+                              description: Well-defined error codes in case the condition reports a problem.
+                              items:
+                                description: ErrorCode is a string alias.
+                                type: string
+                              type: array
+                            lastTransitionTime:
+                              description: Last time the condition transitioned from one status to another.
+                              format: date-time
+                              type: string
+                            lastUpdateTime:
+                              description: Last time the condition was updated.
+                              format: date-time
+                              type: string
+                            message:
+                              description: A human readable message indicating details about the transition.
+                              type: string
+                            operation:
+                              description: Operation describes the operator where the error ocurred.
+                              type: string
+                            reason:
+                              description: The reason for the condition's last transition.
+                              type: string
+                          required:
+                          - lastTransitionTime
+                          - lastUpdateTime
+                          - message
+                          - operation
+                          - reason
+                          type: object
+                        observedGeneration:
+                          format: int64
+                          type: integer
+                        phase:
+                          type: string
+                      required:
+                      - configGeneration
+                      - observedGeneration
+                      type: object
+                    state:
+                      enum:
+                      - failed
+                      - pending
+                      - ok
+                      - unknown
+                      type: string
+                  type: object
+                type: array
+              conditions:
+                items:
+                  description: ClusterBomCondition describes the state of a clusterbom at a certain point.
+                  properties:
+                    lastTransitionTime:
+                      description: Last time the condition transitioned from one status to another.
+                      format: date-time
+                      type: string
+                    lastUpdateTime:
+                      description: The last time this condition was updated.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human readable message indicating details about the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type of clusterbom condition; currently only Ready is supported.
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              description:
+                type: string
+              observedGeneration:
+                format: int64
+                type: integer
+              overallNumOfDeployments:
+                type: integer
+              overallNumOfReadyDeployments:
+                type: integer
+              overallProgress:
+                type: integer
+              overallState:
+                enum:
+                - failed
+                - pending
+                - ok
+                - unknown
+                type: string
+              overallTime:
+                format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

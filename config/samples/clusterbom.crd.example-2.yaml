@@ -1,0 +1,36 @@
+apiVersion: "hub.k8s.sap.com/v1"
+kind: ClusterBom
+metadata:
+  name: validator
+  namespace: garden-hubtest
+spec:
+  secretRef: fs-test.kubeconfig
+
+  applicationConfigs:
+  - id: testmongo
+    configType: helm
+    values:
+      nodes: 5
+      replicaSet:
+        enabled: true
+        replicas:
+          secondary: 5
+      replicaset: true
+    typeSpecificData:
+      installName: "mongo"
+      namespace: "mongo"
+      tarballAccess:
+        url: "https://kubernetes-charts.storage.googleapis.com/mongodb-7.8.2.tgz"
+        authHeader: "Dummy"
+  - id: supergrafana4
+    configType: helm
+    values:
+      nodes: 5
+      multidc: false
+    typeSpecificData:
+      installName: "test2-grafana"
+      namespace: "grafana"
+      catalogAccess:
+        chartName: "grafana"
+        repo: "stable"
+        chartVersion: "4.6.3"

@@ -1,0 +1,39 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "chart.fullname" . -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: hub-health
+  labels:
+    {{- if .Values.ingress.gardenerCertManager }}
+    garden.sapcloud.io/purpose: managed-cert
+    {{- end }}
+    {{- include "chart.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ingress.health.annotations | nindent 4 }}
+    {{- if .Values.ingress.gardenerDNS }}
+    dns.gardener.cloud/class: garden
+    dns.gardener.cloud/dnsnames: {{ .Values.ingress.host }}
+    {{- end }}
+spec:
+  {{- if .Values.ingress.tlsEnabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      {{- range .Values.ingress.health.paths }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ $fullName }}
+            servicePort: {{ .servicePort }}
+      {{- end }}
+{{- end }}

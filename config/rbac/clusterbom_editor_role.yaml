@@ -1,0 +1,26 @@
+# permissions to do edit clusterboms.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterbom-editor-role
+rules:
+- apiGroups:
+  - hub.k8s.sap.com
+  resources:
+  - clusterboms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - hub.k8s.sap.com
+  resources:
+  - clusterboms/status
+  verbs:
+  - get
+  - patch
+  - update

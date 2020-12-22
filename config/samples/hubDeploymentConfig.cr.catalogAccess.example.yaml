@@ -1,0 +1,31 @@
+apiVersion: "hub.k8s.sap.com/v1"
+kind: HubDeploymentConfig
+metadata:
+  name: clusterbom1-id1
+  labels:
+    hub.kubernetes.sap.com/bom-name: clusterbom1
+    hub.kubernetes.sap.com/application-config-id: id1
+    hub.kubernetes.sap.com/configType: helm
+
+spec: 
+  localSecretRef: some-cluster.kubeconfig
+
+  currentOperation:
+    operation: install
+    number: 1
+    time: "2020-01-09T11:48:33Z"
+
+  hubDeploymentConfig:
+    id: id1
+    values:
+      val1: testval1
+      val2: testval2
+    configType: helm
+    typeSpecificData:
+      installName: "das-gute-alte-grafana"
+      namespace: graf
+      catalogAccess:
+        chartName: "grafana"
+        repo: "stable"
+        chartVersion: "4.3.1"
+status:

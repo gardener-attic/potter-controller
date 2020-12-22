@@ -1,0 +1,30 @@
+apiVersion: "hub.k8s.sap.com/v1"
+kind: HubDeploymentConfig
+metadata:
+  name: clusterbom1-id1
+  labels:
+    hub.kubernetes.sap.com/bom-name: clusterbom1
+    hub.kubernetes.sap.com/application-config-id: id1
+    hub.kubernetes.sap.com/configType: helm
+
+spec: 
+  localSecretRef: some-cluster.kubeconfig
+
+  currentOperation:
+    operation: install
+    number: 7
+    time: "2020-01-09T11:48:33Z"
+
+  hubDeploymentConfig:
+    id: id1
+    values:
+      val1: testval1
+      val2: testval2
+    configType: helm
+    typeSpecificData:
+      installName: "echo-server"
+      namespace: raw-url
+      tarballAccess:
+        url: "https://storage.googleapis.com/sap-hub-test/echo-server-1.1.0.tgz"
+        authHeader: PROVIDE AUTH HEADER IF PRIVATE REPO
+status:

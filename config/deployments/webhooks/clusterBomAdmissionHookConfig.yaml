@@ -1,0 +1,22 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: clusterbomadmission.hub.k8s.sap.com
+webhooks:
+  - name: "clusterbomadmission.hub.k8s.sap.com"
+    admissionReviewVersions: ["v1beta1"]
+    sideEffects: "None"
+    clientConfig:
+      # caBundle needed for local setup with self signed certificate
+      # caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURsVENDQW4yZ0F3SUJBZ0lVZitJd0hreVdHK0VSa3ZrZEd4aTV0aDJiKy9nd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1NERUxNQWtHQTFVRUJoTUNWVk14RmpBVUJnTlZCQWdURFZOaGJpQkdjbUZ1WTJselkyOHhDekFKQmdOVgpCQWNUQWtOQk1SUXdFZ1lEVlFRREV3dGxlR0Z0Y0d4bExtNWxkREFlRncweU1EQXhNakl4TXpNNE1EQmFGdzB5Ck5UQXhNakF4TXpNNE1EQmFNRWd4Q3pBSkJnTlZCQVlUQWxWVE1SWXdGQVlEVlFRSUV3MVRZVzRnUm5KaGJtTnAKYzJOdk1Rc3dDUVlEVlFRSEV3SkRRVEVVTUJJR0ExVUVBeE1MWlhoaGJYQnNaUzV1WlhRd2dnRWlNQTBHQ1NxRwpTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDNmVzKzgrUm5JZlMrd3ArRGY4WDA0aVU4U2JPeVFtdWdVCm1LeDdHR0d1Z1pEd2NPWS95YXN5YmtCcHVxckZXaUxsWDdOUmVnTmpTYnlGaHR6bG9CMUcrd09rQ3ErTnJJR1gKcWxVclhqM0p6ZjlWVG5UTGNXTkxnbHB0VXgxL0Uxb3MxT1czY2Jkakh1dmpiaFFRNXplMGhQb3pVWUVvSTFhSAp2NnRSUW16R3RKajVzUGphRmU4MnU4QzVWTk9ROWVpTVNEbk5NYUhOVEliUzFueEk1QVVPU2svZU1INmJEa1ZlCnA4SW50ajN3UkJ6cWVpQkRhdzBEcS9YYldKN0l3RFlKQ1RMVE9zU3dTcTNvZDBKTHpZbWx0N3cycE9PWVd1bkYKc0JsOVdyZVY4TnFCUE9WWUczcTBId25aUjEva3lNc2lCa2ZoOW5zZXdsMDJtYW01YzByVkFnTUJBQUdqZHpCMQpNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHQVFIL0FnRUNNQjBHQTFVZERnUVdCQlRvCmFaR2dueVhJOXh5MzA2Q3pxSDJjaUxHd3hEQWZCZ05WSFNNRUdEQVdnQlRvYVpHZ255WEk5eHkzMDZDenFIMmMKaUxHd3hEQVBCZ05WSFJFRUNEQUdod1RBcUg2R01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQVdnNTZ1YWtSKwpWZHlkdnNzSk5ud2Y1bmxENWErUVVnTkp2NDNUaUhVMmNUV2NvcVhpWW1UOXR1N1RtckROdkVGQ29zMGlRVmJmCjlzZnJabHhBbXB6QWlmYnI5aVBDc09uK2tsY3VKQ1p1SWV0WEN4T2Z5ajNNR2VCcnBhcW1oMXBrR1l3ZTdpUnAKTEZteUlYR29tdU5sVGZYWnNUY1JKSE5lZ2ZhMUZScDNlckZIcWlHdk84cGl0ZGx6NWg2ZlNhVFpMTmhrNEZTQwpnb2Nsc0E5S3ppcjRTUkthRFYxRk40blIvLzJXaTEwSmxDUnM5cU9CbGNESVVCV25HSGhDUjZtTTZGbW1jMkw3ClliMGEzTEFLSTBnaWI1akhjZWx0Ykpnams5YTErT3hrUmo5UXA4WEo2S08xbVRoWExZZ2Fmam9LRjhRbnNYRFYKNDFNSVJrdkQ1UXVuCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
+      # url schema for local dev setup
+      # url: "https://192.168.126.134:8000/checkClusterBom"
+      # url example "https://hub.ingress.cont.hubforplay.shoot.canary.k8s-hana.ondemand.com/checkClusterBom"
+      url: "TO_BE_REPLACED"
+    failurePolicy: Fail
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: ["hub.k8s.sap.com"]
+        apiVersions: ["v1"]
+        resources: ["clusterboms"]
+        scope: "*"

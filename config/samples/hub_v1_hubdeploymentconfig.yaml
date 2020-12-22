@@ -1,0 +1,7 @@
+apiVersion: hub.k8s.sap.com/v1
+kind: HubDeploymentConfig
+metadata:
+  name: hubdeploymentconfig-sample
+spec:
+  # Add fields here
+  foo: bar
