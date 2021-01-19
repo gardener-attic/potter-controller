@@ -1,4 +1,4 @@
-module github.wdf.sap.corp/kubernetes/hub-controller
+module github.com/gardener/potter-controller
 
 go 1.15
 
