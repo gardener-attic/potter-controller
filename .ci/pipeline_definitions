@@ -1,0 +1,87 @@
+potter-controller:
+  template: 'default'
+  base_definition:
+    traits:
+      version: ~
+      notifications:
+        default:
+          on_error:
+            triggering_policy: 'always'
+            recipients:
+            - email_addresses:
+              - DL_5FE20D672BF0A1703D213F8C@global.corp.sap
+  merge-keys:
+    code_tests: &code_test_trait
+      frontend-tests:
+        image: 'node:12-alpine'
+        execute:
+        - start_yarn_test.sh
+        output_dir: frontend_test
+      backend-tests:
+        image: 'golang:1.14.10'
+        execute:
+        - start_go_tests.sh
+        output_dir: backend_test
+      run_linter:
+        image: 'golang:1.14.10'
+        execute:
+        - run_linter.sh
+        output_dir: lint
+    prod_images: &publish_prod_trait
+      publish:
+        dockerimages:
+          hub-controller:
+            registry: 'hub-pipeline-gcr-public'
+            image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/controller'
+            tag_as_latest: true
+          sap-auditlog:
+            registry: 'hub-pipeline-gcr-public'
+            image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/auditlog'
+            dockerfile: 'auditlog.Dockerfile'
+            tag_as_latest: true
+          kapp-controller:
+            registry: 'hub-pipeline-gcr-public'
+            image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/kapp-controller'
+            dockerfile: 'kapp-controller.Dockerfile'
+            tag_as_latest: true
+          landscaper:
+            registry: 'hub-pipeline-gcr-public'
+            image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/landscaper'
+            dockerfile: 'landscaper.Dockerfile'
+            tag_as_latest: true
+   jobs:
+    minor-release:
+      repo:
+        trigger: false
+      traits:
+        version:
+          preprocess: 'finalize'
+          inject_effective_version: true
+        release:
+          nextversion: 'bump_minor'
+          commit_message_prefix: '[skip ci]'
+        component_descriptor: ~
+        <<: *publish_prod_trait
+      steps:
+        <<: *code_test_trait
+        run_integration_test:
+          execute:
+          - dev_integration_test.py
+          output_dir: integration_test
+        helm:
+          depends:
+          - run_integration_test
+          - publish
+          execute:
+          - build_and_push_helm.py
+        update_release:
+          inputs:
+            LINT_PATH: lint_path
+            INTEGRATION_TEST_PATH: integration_test_path
+            BACKEND_TEST_PATH: backend_test_path
+            FRONTEND_TEST_PATH: frontend_test_path
+          execute:
+          - update_release.py
+          depends:
+          - release
+          - run_integration_test
