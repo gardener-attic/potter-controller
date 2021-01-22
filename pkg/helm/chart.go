@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	appRepov1 "github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository/v1alpha1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	appRepov1 "github.com/gardener/potter-controller/api/external/apprepository/v1alpha1"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/ghodss/yaml"
 	"github.com/go-logr/logr"

@@ -9,7 +9,7 @@ import (
 	. "github.com/onsi/gomega"
 	"go.uber.org/zap"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 const (

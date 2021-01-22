@@ -8,8 +8,8 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 func CreateClusterBom(clusterBomName, overallState string) *hubv1.ClusterBom {

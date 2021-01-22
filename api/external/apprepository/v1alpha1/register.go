@@ -21,7 +21,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository"
+	"github.com/gardener/potter-controller/api/external/apprepository"
 )
 
 // SchemeGroupVersion is group version used to register these objects

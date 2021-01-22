@@ -7,7 +7,7 @@ import (
 
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"

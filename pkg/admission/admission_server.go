@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/go-logr/logr"
 	"github.com/gorilla/mux"

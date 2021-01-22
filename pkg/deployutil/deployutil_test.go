@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"

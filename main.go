@@ -25,8 +25,8 @@ import (
 	"time"
 
 	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
-	appRepov1 "github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository/v1alpha1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	appRepov1 "github.com/gardener/potter-controller/api/external/apprepository/v1alpha1"
+	"github.com/gardener/potter-controller/pkg/synchronize"
 
 	"github.com/go-logr/logr"
 	kappcrtl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
@@ -49,11 +49,11 @@ import (
 
 	// +kubebuilder:scaffold:imports
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/admission"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/avcheck"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/controllersdi"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/admission"
+	"github.com/gardener/potter-controller/pkg/avcheck"
+	"github.com/gardener/potter-controller/pkg/controllersdi"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 var (

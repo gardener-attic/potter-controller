@@ -1,7 +1,7 @@
 package deployutil
 
 import (
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"k8s.io/apimachinery/pkg/types"
 )

@@ -15,7 +15,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 const (

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/api/apitypes"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/arschles/assert"
 	"k8s.io/api/admission/v1beta1"

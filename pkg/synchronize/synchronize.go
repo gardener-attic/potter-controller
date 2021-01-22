@@ -8,9 +8,9 @@ import (
 
 	"github.com/go-logr/logr"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

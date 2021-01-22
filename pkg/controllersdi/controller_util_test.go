@@ -5,9 +5,9 @@ import (
 
 	"github.com/arschles/assert"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 func TestWorseState(t *testing.T) {

@@ -3,8 +3,8 @@ package helm
 import (
 	"context"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/go-logr/logr"
 	"helm.sh/helm/v3/pkg/release"
