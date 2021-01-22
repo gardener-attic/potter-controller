@@ -49,7 +49,7 @@ potter-controller:
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/landscaper'
             dockerfile: 'landscaper.Dockerfile'
             tag_as_latest: true
-   jobs:
+  jobs:
     minor-release:
       repo:
         trigger: false
