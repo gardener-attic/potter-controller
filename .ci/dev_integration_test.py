@@ -19,7 +19,8 @@ os.environ['NAMESPACE'] = "release-test"
 # )
 
 # command = [hub_kubeconfig, "--namespace", "release-test"]
-print("TODO: enenble it as currently DISABLED!")
 
-result = subprocess.run(command)
-result.check_returncode()
+# result = subprocess.run(command)
+# result.check_returncode()
+
+print("TODO: enenble it as currently DISABLED!")s
