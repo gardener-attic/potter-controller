@@ -12,11 +12,6 @@ potter-controller:
               - DL_5FE20D672BF0A1703D213F8C@global.corp.sap
   merge-keys:
     code_tests: &code_test_trait
-      frontend-tests:
-        image: 'node:12-alpine'
-        execute:
-        - start_yarn_test.sh
-        output_dir: frontend_test
       backend-tests:
         image: 'golang:1.14.10'
         execute:
