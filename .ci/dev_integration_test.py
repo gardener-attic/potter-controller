@@ -23,4 +23,4 @@ os.environ['NAMESPACE'] = "release-test"
 # result = subprocess.run(command)
 # result.check_returncode()
 
-print("TODO: enenble it as currently DISABLED!")s
+print("TODO: enenble it as currently DISABLED!")
