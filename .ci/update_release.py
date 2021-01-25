@@ -14,8 +14,6 @@ repo_dir = util.check_env('MAIN_REPO_DIR')
 
 lint_path = util.check_env('LINT_PATH')
 backend_test_path = util.check_env('BACKEND_TEST_PATH')
-frontend_test_path = util.check_env('FRONTEND_TEST_PATH')
-
 
 lint_path = pathlib.Path(lint_path).resolve()
 backend_test_path = pathlib.Path(backend_test_path).resolve()
