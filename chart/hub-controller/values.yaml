@@ -42,29 +42,18 @@ image:
   tag: $image_tag
   pullPolicy: IfNotPresent
 
-auditlogImage:
-  name: auditlogsap
-  registry: eu.gcr.io
-  repository: $auditlog_image_repo
-  tag: $auditlog_image_tag
-  pullPolicy: IfNotPresent
-
 kappImage:
   registry: eu.gcr.io
-  repository: $kappcontroller_image_repo
-  tag: $kappcontroller_image_tag
+  repository: $image_repo
+  tag: $image_tag
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
   - gcr
 
 kappController:
+  apiRequestTimeout: 5m
   enablePprof: true
-
-# Uncomment to activate auditlog.
-# The auditLogServiceKey gets passed in as an env variable to the auditlog container.
-# auditLogConfig:
-#   auditLogServiceKey: '{ "myConfigProp": "test" }'
 
 nameOverride: ""
 fullnameOverride: ""
@@ -205,8 +194,8 @@ threads:
 
 landscaper:
   registry: eu.gcr.io
-  repository: sap-gcp-k8s-wm-live/landscaper
-  tag: 0.0.4
+  repository: $image_repo
+  tag: $image_tag
   pullPolicy: IfNotPresent
 
   registrySecrets: # contains optional oci secrets

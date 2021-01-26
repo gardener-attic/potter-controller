@@ -29,11 +29,6 @@ potter-controller:
             registry: 'hub-pipeline-gcr-public'
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/controller'
             tag_as_latest: true
-          sap-auditlog:
-            registry: 'hub-pipeline-gcr-public'
-            image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/auditlog'
-            dockerfile: 'auditlog.Dockerfile'
-            tag_as_latest: true
           kapp-controller:
             registry: 'hub-pipeline-gcr-public'
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/kapp-controller'
