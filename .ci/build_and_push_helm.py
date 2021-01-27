@@ -60,7 +60,7 @@ def packageChartRepo(chart_dir, bucketname):
 if __name__ == "__main__":
     print("\n ===== Starting Helm Packaging - Python Powered =====")
 
-    bucketname = "potter_controller_charts"
+    bucketname = "potter_charts"
     credentials_file_name = "gcs_credentials.json.tmp"
 
     source_path = os.environ['SOURCE_PATH']
@@ -103,6 +103,6 @@ if __name__ == "__main__":
             prepare_gcs_credentials("hub-chart-pipeline-stable", cred_file)
             cred_file.switch()
 
-            packageChartRepo(temp_out, "potter-controller-charts")
+            packageChartRepo(temp_out, "potter-charts")
 
     print("\n ===== Finished Helm Packaging - Python Over =====")
