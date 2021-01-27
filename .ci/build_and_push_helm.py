@@ -72,7 +72,7 @@ if __name__ == "__main__":
     chart_version = utils.get_chart_version(source_path, version_path)
 
     chart_name = "k8s-potter-controller"
-    chart_path = os.path.join(source_path, 'chart', 'hub')
+    chart_path = os.path.join(source_path, 'chart', 'hub-controller')
 
     helm_client.repo_add("bitnami", "https://charts.bitnami.com/bitnami")
 
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # Note use this for debugging if you want to preserve the temp
     # directory: temp_out = mkdtemp(prefix="helm_chart_")
     with tempfile.TemporaryDirectory(prefix="helm_chart_") as temp_out:
-        chart_path_out = os.path.join(temp_out, 'hubchart')
+        chart_path_out = os.path.join(temp_out, 'chart')
         print(f"Rendering helm chart in {chart_path_out}")
         shutil.copytree(chart_path, chart_path_out)
 
