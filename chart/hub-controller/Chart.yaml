@@ -1,6 +1,13 @@
 apiVersion: v2
-name: k8s-app-hub-controller
-description: A Helm chart for Kubernetes
+name: <CHART_NAME>
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: <CHART_VERSION>
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: <CHART_VERSION>
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -12,10 +19,4 @@ description: A Helm chart for Kubernetes
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-version: $app_version
-
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-appVersion: $app_version
+description: A Kubernetes extension to manage deployments in Kubernetes clusters not requiring any additional components running in the managed cluster(s).
