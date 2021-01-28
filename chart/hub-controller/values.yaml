@@ -40,13 +40,13 @@ image:
   registry: eu.gcr.io
   repository: $image_repo
   tag: $image_tag
-  pullPolicy: IfNotPresent
+  pullPolicy: $image_pull_policy
 
 kappImage:
   registry: eu.gcr.io
   repository: $image_repo
   tag: $image_tag
-  pullPolicy: IfNotPresent
+  pullPolicy: $image_pull_policy
 
 imagePullSecrets:
   - gcr
@@ -196,7 +196,7 @@ landscaper:
   registry: eu.gcr.io
   repository: $image_repo
   tag: $image_tag
-  pullPolicy: IfNotPresent
+  pullPolicy: $image_pull_policy
 
   registrySecrets: # contains optional oci secrets
     blueprints: {}
