@@ -57,6 +57,12 @@ potter-controller:
         run_integration_test:
           execute:
           - dev_integration_test.py
+          - --garden-namespace garden-hubtest
+          - --target-clustername int-test
+          - --target-cluster-ns1 con-pro-test1
+          - --target-cluster-ns2 con-pro-test2
+          - --test-prefix pro
+          - --test-type nolandscaper
           output_dir: integration_test
         helm:
           depends:
