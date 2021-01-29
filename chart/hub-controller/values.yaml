@@ -40,13 +40,13 @@ image:
   registry: eu.gcr.io
   repository: $image_repo
   tag: $image_tag
-  pullPolicy: $image_pull_policy
+  imagePullPolicy: $image_pull_policy
 
 kappImage:
   registry: eu.gcr.io
-  repository: $image_repo
-  tag: $image_tag
-  pullPolicy: $image_pull_policy
+  repository: $kappcontroller_image_repo
+  tag: $kappcontroller_image_tag
+  imagePullPolicy: $image_pull_policy
 
 imagePullSecrets:
   - gcr
@@ -194,9 +194,9 @@ threads:
 
 landscaper:
   registry: eu.gcr.io
-  repository: $image_repo
-  tag: $image_tag
-  pullPolicy: $image_pull_policy
+  repository: $landscaper_image_repo
+  tag: $landscaper_image_tag
+  imagePullPolicy: $image_pull_policy
 
   registrySecrets: # contains optional oci secrets
     blueprints: {}
