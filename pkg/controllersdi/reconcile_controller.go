@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/synchronize"
-	"github.com/gardener/potter-controller/pkg/util"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	"github.com/go-logr/logr"
 	"github.com/google/uuid"

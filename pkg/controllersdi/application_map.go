@@ -3,7 +3,7 @@ package controllersdi
 import (
 	ls "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 )
 
 type applicationItem struct {

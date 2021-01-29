@@ -1,8 +1,8 @@
 package predicate
 
 import (
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/util"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"

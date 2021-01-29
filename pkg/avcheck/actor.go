@@ -13,8 +13,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/util"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 )
 
 // each app config of the actor's bom must contain switchKey in its values section

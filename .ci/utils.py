@@ -120,10 +120,8 @@ def is_release_job():
         return False
 
 
-def replace_chart_placeholder(chart_path: str, version_path: str, chart_version: str, chart_name: str):
-    image_version_file = version_path + "/version"
-    with open(image_version_file) as image_file:
-        image_version = image_file.read()
+def replace_chart_placeholder(chart_path: str, image_version: str, chart_version: str, chart_name: str):
+
 
     values_yaml = chart_path + "/values.yaml"
     chart_yaml = chart_path + "/Chart.yaml"
@@ -134,6 +132,9 @@ def replace_chart_placeholder(chart_path: str, version_path: str, chart_version:
     replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_repo", image_repo + "kapp-controller")
     replace_placeholder_in_yaml(values_yaml, "$landscaper_image_repo", image_repo + "landscaper")
  
+    replace_placeholder_in_yaml(chart_yaml, "<CHART_VERSION>", chart_version)
+    replace_placeholder_in_yaml(chart_yaml, "<CHART_NAME>", chart_name)
+
 class TempFileAuto(object):
     def __init__(self, prefix=None, mode='w+', suffix=".yaml"):
         self.file_obj = tempfile.NamedTemporaryFile(mode=mode, prefix=prefix, suffix=suffix, delete=False)

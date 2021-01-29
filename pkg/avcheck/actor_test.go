@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	"github.com/arschles/assert"
 	"github.com/go-logr/zapr"
@@ -16,7 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
 )
 
 func buildTestBom(namespace, name string) *hubv1.ClusterBom {

@@ -3,13 +3,14 @@ package kapp
 import (
 	"context"
 	"encoding/json"
+	"reflect"
 	"time"
 
-	"github.com/gardener/potter-controller/api/apitypes"
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/deployutil"
-	"github.com/gardener/potter-controller/pkg/synchronize"
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/pkg/errors"
@@ -366,6 +367,119 @@ func (r *kappDeployerDI) Cleanup(ctx context.Context, deployData *deployutil.Dep
 	return err
 }
 
+func (r *kappDeployerDI) Preprocess(ctx context.Context, deployData *deployutil.DeployData) {
+	log := util.GetLoggerFromContext(ctx)
+
+	appKey := r.getAppKey(deployData)
+	log = log.WithValues(util.LogKeyKappAppNamespacedName, appKey)
+	ctx = context.WithValue(ctx, util.LoggerKey{}, log)
+
+	app := &v1alpha1.App{}
+
+	err := r.crAndSecretClient.Get(ctx, *appKey, app)
+	if err != nil {
+		if !apierrors.IsNotFound(err) {
+			log.Error(err, "Error fetching app")
+		}
+
+		return
+	}
+
+	// now the app exists
+	oldPauseStatus, err := GetOldOrInitialPauseStatus(ctx, app)
+	if err != nil {
+		return
+	}
+
+	if app.GetGeneration() != app.Status.ObservedGeneration && !oldPauseStatus.Paused {
+		// no need to store something
+		return
+	}
+
+	// from now on app.GetGeneration() == app.Status.ObservedGeneration || oldPauseStatus.Paused
+	if !r.hasProblem(app) {
+		r.updateAppPausedStatus(ctx, app, oldPauseStatus, &PauseStatus{})
+		return
+	}
+
+	// from now on app has problem
+	if !oldPauseStatus.Problem {
+		newPauseStatus := PauseStatus{
+			Paused:       false,
+			PausedSince:  time.Time{},
+			Problem:      true,
+			ProblemSince: time.Now(),
+		}
+		r.updateAppPausedStatus(ctx, app, oldPauseStatus, &newPauseStatus)
+		return
+	}
+
+	// oldPauseStatus.Problem is now true
+
+	if !oldPauseStatus.Paused {
+		if oldPauseStatus.ProblemSince.Add(15 * time.Minute).After(time.Now()) {
+			newPauseStatus := PauseStatus{
+				Paused:       false,
+				PausedSince:  time.Time{},
+				Problem:      true,
+				ProblemSince: oldPauseStatus.ProblemSince,
+			}
+			r.updateAppPausedStatus(ctx, app, oldPauseStatus, &newPauseStatus)
+			return
+		}
+
+		newPauseStatus := PauseStatus{
+			Paused:       true,
+			PausedSince:  time.Now(),
+			Problem:      true,
+			ProblemSince: oldPauseStatus.ProblemSince,
+		}
+
+		r.updateAppPausedStatus(ctx, app, oldPauseStatus, &newPauseStatus)
+		return
+	}
+
+	// oldPauseStatus.Paused is now true
+
+	if oldPauseStatus.PausedSince.Add(5 * time.Minute).After(time.Now()) {
+		return
+	}
+
+	newPauseStatus := PauseStatus{
+		Paused:       false,
+		PausedSince:  time.Now(),
+		Problem:      true,
+		ProblemSince: oldPauseStatus.ProblemSince,
+	}
+
+	r.updateAppPausedStatus(ctx, app, oldPauseStatus, &newPauseStatus)
+}
+
+func (r *kappDeployerDI) updateAppPausedStatus(ctx context.Context, app *v1alpha1.App, oldStatus, newStatus *PauseStatus) {
+	if !reflect.DeepEqual(oldStatus, newStatus) {
+		log := util.GetLoggerFromContext(ctx)
+
+		SetPauseStatus(app, newStatus)
+
+		err := r.crAndSecretClient.Update(ctx, app)
+		if err != nil && !util.IsConcurrentModificationErr(err) {
+			log.Error(err, "error updating kapp app")
+		}
+	}
+}
+
+func (r *kappDeployerDI) hasProblem(app *v1alpha1.App) bool {
+	deployProblem := app.Status.Deploy != nil && app.Status.Deploy.ExitCode != 0
+	fetchProblem := app.Status.Fetch != nil && app.Status.Fetch.ExitCode != 0
+	inspectProblem := app.Status.Inspect != nil && app.Status.Inspect.ExitCode != 0
+	templateProblem := app.Status.Template != nil && app.Status.Template.ExitCode != 0
+
+	deployConditionFailed := util.GetAppConditionStatus(app, v1alpha1.DeleteFailed) == corev1.ConditionFalse
+	reconcileConditionFailed := util.GetAppConditionStatus(app, v1alpha1.ReconcileFailed) == corev1.ConditionFalse
+
+	return deployProblem || fetchProblem || inspectProblem || templateProblem || deployConditionFailed || reconcileConditionFailed
+}
+
 func (r *kappDeployerDI) computeReadinessAndExport(ctx context.Context, deployData *deployutil.DeployData, now metav1.Time) {
 	r.computeReadiness(ctx, deployData, now)
 
@@ -411,6 +525,10 @@ func (r *kappDeployerDI) computeExports(ctx context.Context, deployData *deployu
 			}
 
 			newExportData[key] = exportData
+		}
+
+		if len(newExportData) > 0 {
+			deployData.ExportValues = newExportData
 		}
 	}
 

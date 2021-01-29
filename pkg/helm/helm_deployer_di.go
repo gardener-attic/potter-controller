@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/gardener/potter-controller/api/apitypes"
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/deployutil"
-	"github.com/gardener/potter-controller/pkg/synchronize"
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/pkg/errors"
@@ -146,6 +146,9 @@ func (r *helmDeployerDI) ProcessPendingOperation(ctx context.Context, deployData
 
 func (r *helmDeployerDI) Cleanup(ctx context.Context, deployData *deployutil.DeployData, clusterExists bool) error {
 	return nil
+}
+
+func (r *helmDeployerDI) Preprocess(ctx context.Context, deployData *deployutil.DeployData) {
 }
 
 func (r *helmDeployerDI) processItem(ctx context.Context, deployData *deployutil.DeployData) (*release.Release, error) { // nolint

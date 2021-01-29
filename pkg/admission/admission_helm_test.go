@@ -3,7 +3,7 @@ package admission
 import (
 	"testing"
 
-	"github.com/gardener/potter-controller/api/apitypes"
+	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
 
 	"github.com/arschles/assert"
 	"k8s.io/apimachinery/pkg/runtime"

@@ -34,13 +34,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	fakeK8s "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	"github.com/arschles/assert"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/repo"
 
-	appRepov1 "github.com/gardener/potter-controller/api/external/apprepository/v1alpha1"
+	appRepov1 "github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository/v1alpha1"
 )
 
 func Test_resolveChartURL(t *testing.T) {

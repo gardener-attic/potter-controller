@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
 
 	"gopkg.in/yaml.v3"
 )

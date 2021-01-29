@@ -2,9 +2,10 @@ package util
 
 import (
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	kapp "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
 )
 
 func GetClusterBomCondition(clusterbom *hubv1.ClusterBom, conditionType hubv1.ClusterBomConditionType) *hubv1.ClusterBomCondition {
@@ -137,4 +138,31 @@ func MapToHdcCondition(conditions []v1alpha1.Condition) []hubv1.HubDeploymentCon
 	}
 
 	return result
+}
+
+func GetAppCondition(app *kapp.App, conditionType kapp.AppConditionType) *kapp.AppCondition {
+	for i := range app.Status.Conditions {
+		condition := &app.Status.Conditions[i]
+		if condition.Type == conditionType {
+			return condition
+		}
+	}
+	return nil
+}
+
+func GetAppConditionStatus(app *kapp.App, conditionType kapp.AppConditionType) v1.ConditionStatus {
+	condition := GetAppCondition(app, conditionType)
+
+	if condition == nil {
+		return v1.ConditionUnknown
+	}
+	if string(condition.Status) == string(v1.ConditionTrue) {
+		return v1.ConditionTrue
+	}
+
+	if string(condition.Status) == string(v1.ConditionFalse) {
+		return v1.ConditionFalse
+	}
+
+	return v1.ConditionUnknown
 }

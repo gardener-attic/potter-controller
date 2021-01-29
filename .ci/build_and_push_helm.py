@@ -65,6 +65,11 @@ if __name__ == "__main__":
 
     source_path = os.environ['SOURCE_PATH']
     version_path = os.environ['VERSION_PATH']
+    if os.environ.get('HELM_CHART_PATH'):
+        pipeline_out_path =  os.environ['HELM_CHART_PATH']
+    else:
+        print(f"Environment: {os.environ}")
+        pipeline_out_path = None
 
     secret_server_client = secret_server.SecretServer('hub')
     helm_client = helm.HelmClient()
@@ -82,13 +87,18 @@ if __name__ == "__main__":
     # Note use this for debugging if you want to preserve the temp
     # directory: temp_out = mkdtemp(prefix="helm_chart_")
     with tempfile.TemporaryDirectory(prefix="helm_chart_") as temp_out:
-        chart_path_out = os.path.join(temp_out, 'chart')
+        chart_path_out = os.path.join(temp_out, 'controllerchart')
         print(f"Rendering helm chart in {chart_path_out}")
         shutil.copytree(chart_path, chart_path_out)
 
+        # get the image version from file
+        image_version_file = version_path + "/version"
+        with open(image_version_file) as image_file:
+            image_version = image_file.read()
+
         utils.replace_chart_placeholder(
             chart_path=chart_path_out,
-            version_path=version_path,
+            image_version=image_version,
             chart_version=chart_version,
             chart_name=chart_name
         )
@@ -104,5 +114,9 @@ if __name__ == "__main__":
             cred_file.switch()
 
             packageChartRepo(temp_out, "potter-charts")
+        
+        if pipeline_out_path:
+            print(f"Copying helm chart {chart_tgz_path} to pipeline-oit dir {pipeline_out_path}")
+            shutil.copy(chart_tgz_path, pipeline_out_path)
 
     print("\n ===== Finished Helm Packaging - Python Over =====")

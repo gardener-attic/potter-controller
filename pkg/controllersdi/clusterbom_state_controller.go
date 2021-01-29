@@ -20,12 +20,12 @@ import (
 	"encoding/json"
 	"time"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/avcheck"
-	"github.com/gardener/potter-controller/pkg/deployutil"
-	"github.com/gardener/potter-controller/pkg/synchronize"
-	"github.com/gardener/potter-controller/pkg/util"
-	"github.com/gardener/potter-controller/pkg/util/predicate"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/avcheck"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util/predicate"
 
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/go-logr/logr"

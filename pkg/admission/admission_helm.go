@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"regexp"
 
-	"github.com/gardener/potter-controller/api/apitypes"
-	helmref "github.com/gardener/potter-controller/pkg/helm"
+	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
+	helmref "github.wdf.sap.corp/kubernetes/hub-controller/pkg/helm"
 
 	"k8s.io/apimachinery/pkg/runtime"
 )

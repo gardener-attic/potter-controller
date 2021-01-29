@@ -19,7 +19,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/util/jsonpath"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
 )
 
 type LoggerKey struct{}
@@ -123,6 +123,27 @@ func GetEnvInteger(name string, defaultValue int, logger logr.Logger) int {
 
 		if err != nil {
 			logger.Error(err, "environment value wrong integer value", "name", name, "value", envString)
+		} else {
+			envValue = tmpValue
+		}
+	} else {
+		logger.V(LogLevelWarning).Info("environment value not configured", "name", name)
+	}
+
+	logger.V(LogLevelWarning).Info("environment value used", "name", name, "value", envString)
+
+	return envValue
+}
+
+func GetEnvBool(name string, defaultValue bool, logger logr.Logger) bool {
+	envValue := defaultValue
+
+	envString, ok := os.LookupEnv(name)
+	if ok {
+		tmpValue, err := strconv.ParseBool(envString)
+
+		if err != nil {
+			logger.Error(err, "environment value wrong bool value", "name", name, "value", envString)
 		} else {
 			envValue = tmpValue
 		}

@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/util"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 )
 
 func BuildBom(namespace, bomName, secretRef, installNamespace, tarballURL, catalogTriple string) (*hubv1.ClusterBom, error) {

@@ -1,7 +1,7 @@
 package helm
 
 import (
-	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
 
 	"testing"
 

@@ -10,7 +10,7 @@ The section `cluster.kubeconfigSecretRef` is optional and if missing `secretRef`
 
 Of course it is also possible to add more than one kapp application to a Cluster-BoM or mix it with Helm chart deployments. 
 
-The currently deployed version of the kapp controller could be found under `kappImage.tag` in the [values](https://github.com/gardener/potter-controller/blob/master/chart/hub-controller/values.yaml) file. 
+The currently deployed version of the kapp controller could be found under `kappImage.tag` in the [values](https://github.wdf.sap.corp/kubernetes/hub-controller/blob/master/chart/hub-controller/values.yaml) file. 
 
 
 ```yaml

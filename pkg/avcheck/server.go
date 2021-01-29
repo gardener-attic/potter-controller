@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/gardener/potter-controller/pkg/util"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 )
 
 const (

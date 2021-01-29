@@ -9,12 +9,12 @@ import (
 
 	"go.uber.org/zap"
 
-	hubv1 "github.com/gardener/potter-controller/api/v1"
-	"github.com/gardener/potter-controller/pkg/deployutil"
-	"github.com/gardener/potter-controller/pkg/helm"
-	"github.com/gardener/potter-controller/pkg/synchronize"
-	testUtils "github.com/gardener/potter-controller/pkg/testing"
-	"github.com/gardener/potter-controller/pkg/util"
+	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/helm"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
+	testUtils "github.wdf.sap.corp/kubernetes/hub-controller/pkg/testing"
+	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
 
 	. "github.com/arschles/assert"
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"

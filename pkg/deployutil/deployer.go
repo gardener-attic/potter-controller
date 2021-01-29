@@ -10,4 +10,5 @@ type DeployItemDeployer interface {
 	ReconcileOperation(ctx context.Context, deployData *DeployData)
 	ProcessPendingOperation(ctx context.Context, deployData *DeployData)
 	Cleanup(ctx context.Context, deployData *DeployData, clusterExists bool) error
+	Preprocess(ctx context.Context, deployData *DeployData)
 }
