@@ -131,31 +131,9 @@ def replace_chart_placeholder(chart_path: str, version_path: str, chart_version:
     image_repo = "sap-gcp-cp-k8s-stable-hub/potter-charts/"
     release_only_image_version = image_version
 
-    replace_placeholder_in_yaml(values_yaml, "<DASHBOARD_REPO>", image_repo + "dashboard")
-    replace_placeholder_in_yaml(values_yaml, "<UI_BACKEND_REPO>", image_repo + "ui-backend")
-    replace_placeholder_in_yaml(values_yaml, "<APPREPOSITORY_CONTROLLER_REPO>", image_repo + "apprepo")
-
-    replace_placeholder_in_yaml(values_yaml, "<DASHBOARD_TAG>", image_version)
-    replace_placeholder_in_yaml(values_yaml, "<UI_BACKEND_TAG>", image_version)
-    replace_placeholder_in_yaml(values_yaml, "<APPREPOSITORY_CONTROLLER_TAG>", image_version)
-
-
-    # for public repo check latest version at: https://github.com/bitnami/charts/blob/master/bitnami/mongodb/values.yaml
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_REGISTRY>", "docker.io")
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_REPOSITORY>", "bitnami/mongodb")
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_TAG>", "4.4.3-debian-10-r21")
-
-    # for public repo see https://hub.docker.com/r/ssheehy/mongodb-exporter 
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_EXPORTER_REGISTRY>", "docker.io")
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_EXPORTER_REPOSITORY>", "ssheehy/mongodb-exporter")
-    replace_placeholder_in_yaml(values_yaml, "<MONGODB_EXPORTER_AG>", "0.11.0")
-
-    replace_placeholder_in_yaml(values_yaml, "<HUB_TOKEN_BUTLER_TAG>", release_only_image_version)
-    replace_placeholder_in_yaml(values_yaml, "<KUBECTL_VERSION_TAG>", release_only_image_version)
-
-    replace_placeholder_in_yaml(chart_yaml, "<CHART_VERSION>", chart_version)
-    replace_placeholder_in_yaml(chart_yaml, "<CHART_NAME>", chart_name)
-
+    replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_repo", image_repo + "kapp-controller")
+    replace_placeholder_in_yaml(values_yaml, "$landscaper_image_repo", image_repo + "landscaper")
+ 
 class TempFileAuto(object):
     def __init__(self, prefix=None, mode='w+', suffix=".yaml"):
         self.file_obj = tempfile.NamedTemporaryFile(mode=mode, prefix=prefix, suffix=suffix, delete=False)
