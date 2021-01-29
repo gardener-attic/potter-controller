@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	hubtesting "github.wdf.sap.corp/kubernetes/hub-controller/pkg/testing"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	hubtesting "github.com/gardener/potter-controller/pkg/testing"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/arschles/assert"
 	corev1 "k8s.io/api/core/v1"

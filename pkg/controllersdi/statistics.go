@@ -3,7 +3,7 @@ package controllersdi
 import (
 	"strings"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 )
 
 type statistics struct {

@@ -5,7 +5,7 @@ import (
 	kapp "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 )
 
 func GetClusterBomCondition(clusterbom *hubv1.ClusterBom, conditionType hubv1.ClusterBomConditionType) *hubv1.ClusterBomCondition {

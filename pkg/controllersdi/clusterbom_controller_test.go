@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"testing"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	testing2 "github.wdf.sap.corp/kubernetes/hub-controller/pkg/testing"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	testing2 "github.com/gardener/potter-controller/pkg/testing"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/onsi/ginkgo"

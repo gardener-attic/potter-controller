@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"reflect"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/avcheck"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/secrets"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/avcheck"
+	"github.com/gardener/potter-controller/pkg/secrets"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	corev1 "k8s.io/api/core/v1"

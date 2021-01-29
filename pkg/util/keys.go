@@ -3,7 +3,7 @@ package util
 import (
 	"strings"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 
 	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

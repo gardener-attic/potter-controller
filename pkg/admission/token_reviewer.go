@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/coreos/go-oidc"
 	"github.com/go-logr/logr"

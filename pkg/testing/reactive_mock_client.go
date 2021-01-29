@@ -9,8 +9,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	appRepov1 "github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository/v1alpha1"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	appRepov1 "github.com/gardener/potter-controller/api/external/apprepository/v1alpha1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 )
 
 type ReactorFuncs map[string]func() error

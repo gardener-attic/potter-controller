@@ -1,11 +1,11 @@
 package controllersdi
 
 import (
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/helm"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/kapp"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.com/gardener/potter-controller/pkg/helm"
+	"github.com/gardener/potter-controller/pkg/kapp"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"

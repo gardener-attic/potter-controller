@@ -11,10 +11,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	v12 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/secrets"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	v12 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/secrets"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	"github.com/gardener/potter-controller/pkg/util"
 )
 
 type secretReviewer struct {

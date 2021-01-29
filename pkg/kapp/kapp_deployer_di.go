@@ -6,11 +6,11 @@ import (
 	"reflect"
 	"time"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/deployutil"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/synchronize"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/api/apitypes"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/deployutil"
+	"github.com/gardener/potter-controller/pkg/synchronize"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/pkg/errors"

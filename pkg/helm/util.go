@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
-	appRepov1 "github.wdf.sap.corp/kubernetes/hub-controller/api/external/apprepository/v1alpha1"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/api/apitypes"
+	appRepov1 "github.com/gardener/potter-controller/api/external/apprepository/v1alpha1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/pkg/errors"
 	"helm.sh/helm/v3/pkg/chart"
