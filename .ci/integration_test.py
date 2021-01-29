@@ -33,12 +33,12 @@ landscape_kubeconfig = factory.kubernetes("hub-" + landscape)
 landscape_test_kubeconfig = factory.kubernetes("hub-" + landscape + "-test")
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
-landscape_kubeconfig_path = os.path.join(root_path, hub_path,
+landscape_kubeconfig_path = os.path.join(root_path, controller_path,
                                          "integration-test",
                                          landscape_kubeconfig_name)
 
 landscape_test_kubeconfig_name = "landscape_test_kubeconfig"
-landscape_test_kubeconfig_path = os.path.join(root_path, hub_path,
+landscape_test_kubeconfig_path = os.path.join(root_path, controller_path,
                                               "integration-test",
                                               landscape_test_kubeconfig_name)
 
