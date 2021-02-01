@@ -127,14 +127,25 @@ def replace_chart_placeholder(chart_path: str, image_version: str, chart_version
     chart_yaml = chart_path + "/Chart.yaml"
 
     image_repo = "sap-gcp-cp-k8s-stable-hub/potter-charts/"
+<<<<<<< HEAD
     release_only_image_version = image_version
 
     replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_repo", image_repo + "kapp-controller")
     replace_placeholder_in_yaml(values_yaml, "$landscaper_image_repo", image_repo + "landscaper")
  
+=======
+
+>>>>>>> set placeholders for public helam chart
     replace_placeholder_in_yaml(chart_yaml, "<CHART_VERSION>", chart_version)
     replace_placeholder_in_yaml(chart_yaml, "<CHART_NAME>", chart_name)
 
+    replace_placeholder_in_yaml(values_yaml, "$image_repo", image_repo + "potter-controller")
+    replace_placeholder_in_yaml(values_yaml, "$image_tag", image_version)
+    replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_repo", " index.docker.io/k14s/kapp-controller@sha256:8121296ee187b35c3109b11d747ce3eb2c01fb0386f162c89bab1d264189caf8")
+    replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_tag", "~")
+    replace_placeholder_in_yaml(values_yaml, "$landscaper_image_repo", "eu.gcr.io/gardener-project/landscaper/landscaper-controller")
+    replace_placeholder_in_yaml(values_yaml, "$landscaper_image_tag", "v0.5.2")
+    replace_placeholder_in_yaml(values_yaml, "$image_pull_policy", "IfNotPresent")
 class TempFileAuto(object):
     def __init__(self, prefix=None, mode='w+', suffix=".yaml"):
         self.file_obj = tempfile.NamedTemporaryFile(mode=mode, prefix=prefix, suffix=suffix, delete=False)
