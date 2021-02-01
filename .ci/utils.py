@@ -127,15 +127,6 @@ def replace_chart_placeholder(chart_path: str, image_version: str, chart_version
     chart_yaml = chart_path + "/Chart.yaml"
 
     image_repo = "sap-gcp-cp-k8s-stable-hub/potter-charts/"
-<<<<<<< HEAD
-    release_only_image_version = image_version
-
-    replace_placeholder_in_yaml(values_yaml, "$kappcontroller_image_repo", image_repo + "kapp-controller")
-    replace_placeholder_in_yaml(values_yaml, "$landscaper_image_repo", image_repo + "landscaper")
- 
-=======
-
->>>>>>> set placeholders for public helam chart
     replace_placeholder_in_yaml(chart_yaml, "<CHART_VERSION>", chart_version)
     replace_placeholder_in_yaml(chart_yaml, "<CHART_NAME>", chart_name)
 
