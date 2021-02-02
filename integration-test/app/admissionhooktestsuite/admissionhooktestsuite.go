@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/builder"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/catalog"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/util"
+	"github.com/gardener/potter-controller/integration-test/app/builder"
+	"github.com/gardener/potter-controller/integration-test/app/catalog"
+	"github.com/gardener/potter-controller/integration-test/app/util"
 
 	log "github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/errors"

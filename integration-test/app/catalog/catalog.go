@@ -1,6 +1,6 @@
 package catalog
 
-import "github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
+import "github.com/gardener/potter-controller/api/apitypes"
 
 var ChartEcho1 = apitypes.CatalogAccess{ // nolint
 	Repo:         "sap-incubator",

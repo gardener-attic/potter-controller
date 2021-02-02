@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/util"
+	"github.com/gardener/potter-controller/integration-test/app/util"
 
 	"github.com/pkg/errors"
 	grpcStatus "google.golang.org/grpc/status"

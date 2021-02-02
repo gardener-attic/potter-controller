@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/util"
+	"github.com/gardener/potter-controller/api/apitypes"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/integration-test/app/util"
 
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"

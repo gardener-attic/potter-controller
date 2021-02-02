@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/builder"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/catalog"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/helm"
-	"github.wdf.sap.corp/kubernetes/hub-controller/integration-test/app/util"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
+	"github.com/gardener/potter-controller/integration-test/app/builder"
+	"github.com/gardener/potter-controller/integration-test/app/catalog"
+	"github.com/gardener/potter-controller/integration-test/app/helm"
+	"github.com/gardener/potter-controller/integration-test/app/util"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

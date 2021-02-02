@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/kapp"
-	"github.wdf.sap.corp/kubernetes/hub-controller/pkg/util"
+	"github.com/gardener/potter-controller/pkg/kapp"
+	"github.com/gardener/potter-controller/pkg/util"
 
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	"k8s.io/apimachinery/pkg/types"

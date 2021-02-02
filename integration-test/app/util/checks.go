@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"time"
 
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 
 	external "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"

@@ -3,8 +3,8 @@ package util
 import (
 	"encoding/json"
 
-	"github.wdf.sap.corp/kubernetes/hub-controller/api/apitypes"
-	hubv1 "github.wdf.sap.corp/kubernetes/hub-controller/api/v1"
+	"github.com/gardener/potter-controller/api/apitypes"
+	hubv1 "github.com/gardener/potter-controller/api/v1"
 
 	log "github.com/sirupsen/logrus"
 )
