@@ -11,6 +11,7 @@ import secret_server
 from util import ctx
 
 print("Starting integration test")
+print(f"current environment: {os.environ}")
 controller_path = os.environ['HUB_CONTROLLER_PATH']
 root_path = os.environ['ROOT_PATH']
 landscape = os.environ['LANDSCAPE']
