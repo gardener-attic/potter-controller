@@ -7,7 +7,6 @@ import shutil
 import utils
 import yaml
 
-import secret_server
 from util import ctx
 
 print("Starting integration test")
@@ -29,31 +28,8 @@ except KeyError:
     print("Output dir env var not set. " +
           "The output of the integration test won't be saved in a file.")
 
-# Init clients
-secret_server_client = secret_server.SecretServer()
-garden_cluster_k8s_client = secret_server_client.get_kube_client(
-    f'garden-{landscape}-virtual'
-)
-
-# read and write kubeconfig of landscape cluster
-garden_virtual_kubeconfig = secret_server_client.get_kubeconfig(
-    f'garden-{landscape}-virtual'
-)
-
-garden_virtual_kubeconfig_path = os.path.join(
-    root_path,
-    "garden_virtual_kubeconfig.yaml"
-)
-
-landscape_kubeconfig = utils.get_kubecfg_from_serviceaccount(
-    kubernetes_client=garden_cluster_k8s_client,
-    namespace='default',
-    name='app-hub-controller',
-    sample_kubecfg_path=garden_virtual_kubeconfig_path
-)
-
-# factory = ctx().cfg_factory()
-# garden_bom_dc_kubecfg = factory.kubernetes("hub-" + landscape)
+factory = ctx().cfg_factory()
+landscape_kubeconfig = factory.kubernetes("app-hub-controller")
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
 landscape_kubeconfig_path = os.path.join(root_path, controller_path,
@@ -79,8 +55,8 @@ else:
 
 os.chdir(os.path.join(root_path, controller_path, "integration-test"))
 
-command = ['go', 'run', 'main.go',
-           '-garden-kubeconfig', landscape_kubeconfig_path,
+command = ["go", "run", "main.go",
+           "--kubeconfig", landscape_kubeconfig_name,
            '-garden-namespace', garden_namespace,
            '-target-clustername', target_cluster,
            "-target-cluster-namespace1", target_cluster_ns1,
