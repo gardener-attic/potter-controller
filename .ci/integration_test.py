@@ -29,24 +29,44 @@ except KeyError:
     print("Output dir env var not set. " +
           "The output of the integration test won't be saved in a file.")
 
-factory = ctx().cfg_factory()
-landscape_kubeconfig = factory.kubernetes("hub-" + landscape)
-landscape_test_kubeconfig = factory.kubernetes("hub-" + landscape + "-test")
+# Init clients
+secret_server_client = secret_server.SecretServer()
+garden_cluster_k8s_client = secret_server_client.get_kube_client(
+    f'garden-{landscape}-virtual'
+)
+
+# read and write kubeconfig of landscape cluster
+garden_virtual_kubeconfig = secret_server_client.get_kubeconfig(
+    f'garden-{landscape}-virtual'
+)
+
+garden_virtual_kubeconfig_path = os.path.join(
+    root_path,
+    "garden_virtual_kubeconfig.yaml"
+)
+
+utils.persist_data(
+    garden_virtual_kubeconfig_path,
+    yaml.safe_dump(garden_virtual_kubeconfig)
+)
+
+landscape_kubeconfig = utils.get_kubecfg_from_serviceaccount(
+    kubernetes_client=garden_cluster_k8s_client,
+    namespace='default',
+    name='app-hub-controller',
+    sample_kubecfg_path=garden_virtual_kubeconfig_path
+)
+
+# factory = ctx().cfg_factory()
+# garden_bom_dc_kubecfg = factory.kubernetes("hub-" + landscape)
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
 landscape_kubeconfig_path = os.path.join(root_path, controller_path,
                                          "integration-test",
                                          landscape_kubeconfig_name)
 
-landscape_test_kubeconfig_name = "landscape_test_kubeconfig"
-landscape_test_kubeconfig_path = os.path.join(root_path, controller_path,
-                                              "integration-test",
-                                              landscape_test_kubeconfig_name)
-
 utils.write_data(landscape_kubeconfig_path, yaml.dump(
                 landscape_kubeconfig.kubeconfig()))
-utils.write_data(landscape_test_kubeconfig_path, yaml.dump(
-                landscape_test_kubeconfig.kubeconfig()))
 
 landscape_config = utils.get_landscape_config("hub-" + landscape)
 int_test_config = landscape_config.raw["int-test"]["config"]
@@ -64,12 +84,8 @@ else:
 
 os.chdir(os.path.join(root_path, controller_path, "integration-test"))
 
-# command = ["go", "run", "main.go",
-#            "--kubeconfig", landscape_kubeconfig_name,
-#            "--target-kubeconfig", landscape_test_kubeconfig_name,
-#            "--token", token, "--namespace", namespace]
 command = ['go', 'run', 'main.go',
-           '-garden-kubeconfig', landscape_test_kubeconfig_path,
+           '-garden-kubeconfig', landscape_kubeconfig_path,
            '-garden-namespace', garden_namespace,
            '-target-clustername', target_cluster,
            "-target-cluster-namespace1", target_cluster_ns1,
