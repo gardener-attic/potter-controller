@@ -45,11 +45,6 @@ garden_virtual_kubeconfig_path = os.path.join(
     "garden_virtual_kubeconfig.yaml"
 )
 
-utils.persist_data(
-    garden_virtual_kubeconfig_path,
-    yaml.safe_dump(garden_virtual_kubeconfig)
-)
-
 landscape_kubeconfig = utils.get_kubecfg_from_serviceaccount(
     kubernetes_client=garden_cluster_k8s_client,
     namespace='default',
