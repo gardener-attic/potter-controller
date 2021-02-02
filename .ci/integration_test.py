@@ -77,6 +77,7 @@ command = ['go', 'run', 'main.go',
            "-test-prefix", test_prefix,
            "-test-type", test_type]
 
+print(f"Running integration test with command: {' '.join(command)}")
 try:
     # check if path var is set
     integration_test_path
