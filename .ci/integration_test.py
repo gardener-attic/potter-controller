@@ -56,7 +56,7 @@ else:
 os.chdir(os.path.join(root_path, controller_path, "integration-test"))
 
 command = ["go", "run", "main.go",
-           "-kubeconfig", landscape_kubeconfig_path,
+           "-garden-kubeconfig", landscape_kubeconfig_path,
            '-garden-namespace', garden_namespace,
            '-target-clustername', target_cluster,
            "-target-cluster-namespace1", target_cluster_ns1,
