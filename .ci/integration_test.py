@@ -29,7 +29,7 @@ except KeyError:
           "The output of the integration test won't be saved in a file.")
 
 factory = ctx().cfg_factory()
-landscape_kubeconfig = factory.kubernetes("app-hub-controller")
+landscape_kubeconfig = factory.kubernetes("hub-" + landscape + "-test")
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
 landscape_kubeconfig_path = os.path.join(root_path, controller_path,
