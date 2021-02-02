@@ -1,6 +1,7 @@
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
+IMG_LANDSCAPER ?= landscaper:latest
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:crdVersions=v1,trivialVersions=false"
@@ -59,11 +60,14 @@ generate: controller-gen
 docker-build-hub: test
 	docker build . -t ${IMG}
 
-docker-build: docker-build-hub
+docker-build-landscaper:
+	docker build . -f landscaper.Dockerfile -t ${IMG_LANDSCAPER}
 
+docker-build: docker-build-hub docker-build-landscaper
 # Push the docker image
 docker-push:
 	docker push ${IMG}
+	docker push ${IMG_LANDSCAPER}
 
 # find or download controller-gen
 # download controller-gen if necessary

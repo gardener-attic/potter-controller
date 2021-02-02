@@ -23,6 +23,7 @@ spec:
       containers:
         - args:
           - --kubeconfig=/usr/gardener-secret/kubeconfig
+          - --api-request-timeout={{ .Values.kappController.apiRequestTimeout }}
           - --dangerous-enable-pprof={{ .Values.kappController.enablePprof }}
           env:
             - name: KAPPCTRL_MEM_TMP_DIR

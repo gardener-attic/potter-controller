@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/go-logr/zapr"
 	"github.com/gardener/potter-controller/integration-test/app/admissionhooktestsuite"
 	"github.com/gardener/potter-controller/integration-test/app/basiccbtest"
 	"github.com/gardener/potter-controller/integration-test/app/namedsecretvaluestestsuite"
 	"github.com/gardener/potter-controller/integration-test/app/secretvaluestestsuite"
+	"github.com/go-logr/zapr"
 	"go.uber.org/zap"
 	"os"
 
