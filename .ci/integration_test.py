@@ -11,7 +11,7 @@ from util import ctx
 
 print("Starting integration test")
 print(f"current environment: {os.environ}")
-controller_path = os.environ['HUB_CONTROLLER_PATH']
+source_path = os.environ['SOURCE_PATH']
 root_path = os.environ['ROOT_PATH']
 landscape = os.environ['LANDSCAPE']
 garden_namespace = os.environ['GARDEN_NAMESPACE']
@@ -32,16 +32,12 @@ factory = ctx().cfg_factory()
 landscape_kubeconfig = factory.kubernetes("garden-" + landscape + "-virtual")
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
-landscape_kubeconfig_path = os.path.join(root_path, controller_path,
+landscape_kubeconfig_path = os.path.join(root_path, source_path,
                                          "integration-test",
                                          landscape_kubeconfig_name)
 
 utils.write_data(landscape_kubeconfig_path, yaml.dump(
                 landscape_kubeconfig.kubeconfig()))
-
-landscape_config = utils.get_landscape_config("hub-" + landscape)
-int_test_config = landscape_config.raw["int-test"]["config"]
-token = int_test_config["auth"]["token"]
 
 golang_found = shutil.which("go")
 if golang_found:
@@ -53,7 +49,7 @@ else:
     result.check_returncode()
 
 
-os.chdir(os.path.join(root_path, controller_path, "integration-test"))
+os.chdir(os.path.join(root_path, source_path, "integration-test"))
 
 command = ["go", "run", "main.go",
            "-garden-kubeconfig", landscape_kubeconfig_path,

@@ -6,7 +6,7 @@ import sys
 
 sys_args = sys.argv
 root_path = os.getcwd()
-hub_controller_path = os.environ['SOURCE_PATH']
+source_path = os.environ['SOURCE_PATH']
 
 # parse sys var(will be passed to subprocess calls)
 for i in range(len(sys_args)):
@@ -23,14 +23,13 @@ for i in range(len(sys_args)):
     if "--test-type " in sys_args[i]:
         os.environ['TEST_TYPE'] = sys_args[i].split(' ', 2)[1]
 
-os.environ['HUB_CONTROLLER_PATH'] = os.environ['SOURCE_PATH']
 os.environ['ROOT_PATH'] = root_path
 os.environ['LANDSCAPE'] = "dev"
 os.environ['NAMESPACE'] = "controller-release-test"
 
 
 hub_kubeconfig = os.path.join(
-    root_path, hub_controller_path,
+    root_path, source_path,
     ".ci",
     "integration_test.py"
 )
