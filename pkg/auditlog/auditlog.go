@@ -61,6 +61,13 @@ type AuditMessageResponse struct {
 	ID string
 }
 
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 func NewAuditMessage(action Action, clusterBOM, projectName, clusterName, serviceUser, clusterURL, bom,
 	oldBom string, success *bool) *AuditMessageInfo {
 	msg := new(AuditMessageInfo)
@@ -132,8 +139,19 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 	a.log.Info("Sending auditlog message, len: " + strconv.Itoa(len(a.buffer.Bytes())))
 	err = a.conn.SetWriteDeadline(time.Now().Add(a.timeout))
 	a.checkError(err, "Error set deadline")
-	_, err = a.conn.Write(a.buffer.Bytes())
-	a.checkError(err, "Error sending audit message")
+
+	// first send size of message:
+	messageLength := len(a.buffer.Bytes())
+	bufferForMessageLength := []byte(strconv.Itoa(messageLength))
+	_, err = a.conn.Write(bufferForMessageLength)
+	a.checkError(err, "Error sending audit message: ")
+	const chunkSize = 4096
+	for offset := 0; offset < messageLength; offset += chunkSize {
+		chunk := a.buffer.Bytes()[offset:min(messageLength, offset+chunkSize)]
+		_, err := a.conn.Write(chunk)
+		a.checkError(err, "Error sending audit message: ")
+	}
+
 	a.buffer.Reset()
 	if err != nil {
 		return id, err
