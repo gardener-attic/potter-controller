@@ -32,5 +32,8 @@ __pycache__
 /wss-unified-agent-*.jar
 /whitesource/
 
+# security relevant
+*kubeconfig*
+
 # others
 config/crd/bases/_.yaml
