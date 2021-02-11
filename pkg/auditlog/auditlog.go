@@ -18,6 +18,8 @@ const (
 
 type Action int
 
+var netLock sync.Mutex
+
 func (a *Action) GetActionAsString() string {
 	if a != nil {
 		switch *a {
@@ -43,7 +45,6 @@ type AuditLoggerImpl struct {
 	buffer  bytes.Buffer
 	timeout time.Duration
 	recvbuf []byte
-	netLock sync.Mutex
 }
 
 type AuditMessageInfo struct {
@@ -139,8 +140,8 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 	}
 
 	// synchronize multiple audit-requests by serializing messages
-	a.netLock.Lock()
-	defer a.netLock.Unlock()
+	netLock.Lock()
+	defer netLock.Unlock()
 	a.log.Info("Sending auditlog message, len: " + strconv.Itoa(len(a.buffer.Bytes())))
 	err = a.conn.SetWriteDeadline(time.Now().Add(a.timeout))
 	a.checkError(err, "Error set deadline")
