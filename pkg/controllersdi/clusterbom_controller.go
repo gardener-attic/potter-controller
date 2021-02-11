@@ -748,6 +748,7 @@ func (r *ClusterBomReconciler) auditLog(ctx context.Context, action auditlog.Act
 	clusterURL := ""
 	bomName := ""
 	projectName := ""
+	const maxCBLen int = 100000
 
 	if a.clusterbomExists {
 		bomName = a.clusterbom.Name
@@ -774,6 +775,9 @@ func (r *ClusterBomReconciler) auditLog(ctx context.Context, action auditlog.Act
 		bomAsString = ""
 	} else {
 		bomAsString = string(bomAsYaml)
+		if len(bomAsString) > maxCBLen {
+			bomAsString = bomAsString[:maxCBLen] + "... (shortened)"
+		}
 	}
 	bomAsYaml, err = json.Marshal(a.clusterbom.Annotations["kubectl.kubernetes.io/last-applied-configuration"])
 	var oldBomAsString string
@@ -782,6 +786,9 @@ func (r *ClusterBomReconciler) auditLog(ctx context.Context, action auditlog.Act
 		oldBomAsString = ""
 	} else {
 		oldBomAsString = string(bomAsYaml)
+		if len(bomAsString) > maxCBLen {
+			bomAsString = bomAsString[:maxCBLen] + "... (shortened)"
+		}
 	}
 
 	auditMsg := auditlog.NewAuditMessage(action, bomName, projectName, clusterName, userID, clusterURL, bomAsString,
