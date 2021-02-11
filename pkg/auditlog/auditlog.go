@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -42,6 +43,7 @@ type AuditLoggerImpl struct {
 	buffer  bytes.Buffer
 	timeout time.Duration
 	recvbuf []byte
+	netLock sync.Mutex
 }
 
 type AuditMessageInfo struct {
@@ -136,6 +138,9 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 		return id, err
 	}
 
+	// synchronize multiple audit-requests by serializing messages
+	a.netLock.Lock()
+	defer a.netLock.Unlock()
 	a.log.Info("Sending auditlog message, len: " + strconv.Itoa(len(a.buffer.Bytes())))
 	err = a.conn.SetWriteDeadline(time.Now().Add(a.timeout))
 	a.checkError(err, "Error set deadline")
