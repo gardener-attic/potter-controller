@@ -1,15 +1,13 @@
 package auditlog
 
 import (
-	"bytes"
 	"encoding/gob"
-	"fmt"
 	"net"
-	"strconv"
 	"sync"
 	"time"
 
 	"github.com/go-logr/logr"
+	"github.com/prometheus/common/log"
 )
 
 const (
@@ -18,8 +16,6 @@ const (
 )
 
 type Action int
-
-var netLock sync.Mutex
 
 func (a *Action) GetActionAsString() string {
 	if a != nil {
@@ -42,10 +38,11 @@ type AuditLogger interface {
 
 type AuditLoggerImpl struct {
 	log     logr.Logger
-	conn    *net.UDPConn
-	buffer  bytes.Buffer
+	netLock sync.Mutex
+	conn    *net.TCPConn
 	timeout time.Duration
-	recvbuf []byte
+	dec     *gob.Decoder
+	enc     *gob.Encoder
 }
 
 type AuditMessageInfo struct {
@@ -89,30 +86,41 @@ func NewAuditMessage(action Action, clusterBOM, projectName, clusterName, servic
 }
 
 func NewAuditLogger(log logr.Logger) (*AuditLoggerImpl, error) {
-	ServerAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:10520")
-	if err != nil {
-		log.Error(err, "Failed to create UDP server")
-		return nil, err
-	}
-
-	LocalAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
-	if err != nil {
-		log.Error(err, "Failed to resolve UDP address")
-		return nil, err
-	}
-
-	conn, err := net.DialUDP("udp", LocalAddr, ServerAddr)
-	if err != nil {
-		log.Error(err, "Failed to start UDP")
-		return nil, err
-	}
 
 	auditLogger := new(AuditLoggerImpl)
-	auditLogger.log = log
-	auditLogger.conn = conn
-	auditLogger.timeout = 5 * time.Second
-	auditLogger.recvbuf = make([]byte, 65536)
-	return auditLogger, nil
+	err := auditLogger.Init()
+	return auditLogger, err
+}
+
+func (a *AuditLoggerImpl) Init() error {
+	connected := false
+	retries := 0
+
+	serverAddr, err := net.ResolveTCPAddr("tcp", ":10520")
+	if err != nil {
+		log.Error(err, "Failed to resolve TCP address")
+		return err
+	}
+
+	for !connected && retries < 10 {
+		a.conn, err = net.DialTCP("tcp", nil, serverAddr)
+		if err != nil {
+			log.Error(err, "Error connecting to Auditlog server ")
+			retries++
+			time.Sleep(time.Second * 5)
+		} else {
+			connected = true
+		}
+	}
+	if err != nil {
+		log.Error(err, "Failed to connect to TCP address")
+		return err
+	}
+
+	a.enc = gob.NewEncoder(a.conn)
+	a.dec = gob.NewDecoder(a.conn)
+	a.timeout = time.Second * 5
+	return nil
 }
 
 func (a *AuditLoggerImpl) Close() error {
@@ -132,58 +140,34 @@ func (a *AuditLoggerImpl) checkError(err error, msg string) {
 	}
 }
 func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error) {
-	id := ""
-	enc := gob.NewEncoder(&a.buffer)
-	err := enc.Encode(auditMessageInfo)
-	a.checkError(err, "Encode error of audit message")
-	if err != nil {
-		return id, err
-	}
+	var auditResponse AuditMessageResponse
 
 	// synchronize multiple audit-requests by serializing messages
-	netLock.Lock()
-	defer netLock.Unlock()
-	a.log.Info("Sending auditlog message, len: " + strconv.Itoa(len(a.buffer.Bytes())))
-	err = a.conn.SetWriteDeadline(time.Now().Add(a.timeout))
+	a.netLock.Lock()
+	defer a.netLock.Unlock()
+	a.log.Info("Sending auditlog message")
+
+	err := a.conn.SetWriteDeadline(time.Now().Add(a.timeout))
 	a.checkError(err, "Error set deadline")
 
-	// first send size of message:
-	messageLength := len(a.buffer.Bytes())
-	bufferForMessageLength := []byte(strconv.Itoa(messageLength))
-	_, err = a.conn.Write(bufferForMessageLength)
-	a.checkError(err, "Error sending audit message: ")
-	const chunkSize = 4096
-	nSent := chunkSize
-	for offset := 0; offset < messageLength; offset += nSent {
-		chunk := a.buffer.Bytes()[offset:min(messageLength, offset+chunkSize)]
-		nSent, err = a.conn.Write(chunk)
-		a.checkError(err, "Error sending audit message: ")
-		if nSent < len(chunk) {
-			fmt.Println("!!!WARNING: less sent than wanted: ", nSent)
-		}
-	}
-
-	a.buffer.Reset()
+	err = a.enc.Encode(auditMessageInfo)
 	if err != nil {
-		return id, err
+		a.log.Error(err, "Error while encoding audit message (will reconnect) ")
+		a.Init()
+		return "", err
 	}
 
 	// wait for response:
 	err = a.conn.SetReadDeadline(time.Now().Add(a.timeout))
 	a.checkError(err, "Error set deadline")
-	n, _, err := a.conn.ReadFromUDP(a.recvbuf)
+	err = a.dec.Decode(&auditResponse)
 	if err != nil {
-		a.log.Error(err, "Error while reading from UDP: ")
-	} else if n > 0 {
-		var auditResponse AuditMessageResponse
-		dec := gob.NewDecoder(bytes.NewReader(a.recvbuf))
-		err = dec.Decode(&auditResponse)
-		if err != nil {
-			a.log.Error(err, "Decode error of audit message")
-		}
-		a.buffer.Reset()
-		a.log.Info("Received answer from auditlog (" + strconv.Itoa(n) + " bytes, id: " + id)
+		a.log.Error(err, "Decode error of audit message (will reconnect) ")
+		a.Init()
+		return "", err
 	}
 
-	return id, err
+	a.log.Info("Received answer from auditlog , id: " + auditResponse.ID)
+
+	return auditResponse.ID, err
 }
