@@ -3,6 +3,7 @@ package auditlog
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
 	"net"
 	"strconv"
 	"sync"
@@ -152,10 +153,14 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 	_, err = a.conn.Write(bufferForMessageLength)
 	a.checkError(err, "Error sending audit message: ")
 	const chunkSize = 4096
-	for offset := 0; offset < messageLength; offset += chunkSize {
+	nSent := chunkSize
+	for offset := 0; offset < messageLength; offset += nSent {
 		chunk := a.buffer.Bytes()[offset:min(messageLength, offset+chunkSize)]
-		_, err := a.conn.Write(chunk)
+		nSent, err = a.conn.Write(chunk)
 		a.checkError(err, "Error sending audit message: ")
+		if nSent < len(chunk) {
+			fmt.Println("!!!WARNING: less sent than wanted: ", nSent)
+		}
 	}
 
 	a.buffer.Reset()
@@ -177,7 +182,6 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 			a.log.Error(err, "Decode error of audit message")
 		}
 		a.buffer.Reset()
-
 		a.log.Info("Received answer from auditlog (" + strconv.Itoa(n) + " bytes, id: " + id)
 	}
 
