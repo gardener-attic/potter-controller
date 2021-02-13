@@ -88,7 +88,10 @@ func NewAuditMessage(action Action, clusterBOM, projectName, clusterName, servic
 func NewAuditLogger(log logr.Logger) (*AuditLoggerImpl, error) {
 
 	auditLogger := new(AuditLoggerImpl)
+	auditLogger.log = log
+	fmt.Println("Create new audit logger")
 	err := auditLogger.Init()
+
 	return auditLogger, err
 }
 
