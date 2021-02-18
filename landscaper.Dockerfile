@@ -25,14 +25,6 @@ FROM eu.gcr.io/gardenlinux/gardenlinux:184.0 AS base
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confnew" install ca-certificates \
     && rm -rf /var/lib/apt /var/cache/apt
 
-# Disable start of Berkeley DB
-# copied installation package files from https://github.wdf.sap.corp/devx-wing/noberkeley/wiki/NoBerkeley-Packages
-COPY noberkeley/noberkeley_1.0.0-3_amd64.deb .
-COPY noberkeley/noberkeley-dev_1.0.0-3_amd64.deb .
-RUN apt-get -y install ./noberkeley_1.0.0-3_amd64.deb ./noberkeley-dev_1.0.0-3_amd64.deb && \
-    rm noberkeley_1.0.0-3_amd64.deb && \
-    rm noberkeley-dev_1.0.0-3_amd64.deb
-
 # Create appuser
 ENV USER=appuser
 ENV UID=10001
@@ -46,25 +38,6 @@ RUN adduser \
 --no-create-home \
 --uid "${UID}" \
 "$USER"
-
-# Fixes vulnerabilities
-# CVE-2020-29361, CVE-2020-29362, and CVE-2020-29363
-# CVE-2019-20838
-# CVE-2019-9923
-# RUN apt-get update && apt-get -y upgrade p11-kit=0.23.22 \
-    # pcre=8.44 \
-    # tar=1.32
-# triaged by bot_871@protecode-sc.local (GCR)
-# TODO: packages for gardenlinux/debian (bullseye) not available yet
-
-# Disable start of Berkeley DB
-# copied installation package files from https://github.wdf.sap.corp/devx-wing/noberkeley/wiki/NoBerkeley-Packages
-COPY noberkeley/noberkeley_1.0.0-3_amd64.deb .
-COPY noberkeley/noberkeley-dev_1.0.0-3_amd64.deb .
-RUN apt-get -y install ./noberkeley_1.0.0-3_amd64.deb ./noberkeley-dev_1.0.0-3_amd64.deb && \
-    rm noberkeley_1.0.0-3_amd64.deb && \
-    rm noberkeley-dev_1.0.0-3_amd64.deb
-RUN apt-get -y --purge remove db5.3
 
 USER ${USER}:${USER}
 
