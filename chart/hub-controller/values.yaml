@@ -45,7 +45,7 @@ image:
 kappImage:
   registry: eu.gcr.io
   repository: $kappcontroller_image_repo
-  tag: $image_tag
+  tag: $kappcontroller_image_tag
   imagePullPolicy: $image_pull_policy
 
 imagePullSecrets:
@@ -195,7 +195,7 @@ threads:
 landscaper:
   registry: eu.gcr.io
   repository: $landscaper_image_repo
-  tag: $image_tag
+  tag: $landscaper_image_tag
   imagePullPolicy: $image_pull_policy
 
   registrySecrets: # contains optional oci secrets
