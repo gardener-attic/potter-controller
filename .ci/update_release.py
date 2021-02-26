@@ -63,3 +63,60 @@ else:
         name=f'integration-test-result-{version_file_contents}.txt',
         asset=integration_test_path.open(mode='rb'),
     )
+
+# Update description of the release notes
+release_notes = gh_release.body
+if not release_notes:
+    release_notes = "n/a"
+
+description_md = f"""# Release {version_file_contents} of the potter-hub
+
+This is release {version_file_contents} of the Gardener Potter-Controller project.
+The Potter Controller is a Kubernetes extension to manage deployments in Kubernetes
+clusters. More details can be found on the
+[potter-controller](https://github.com/gardener/potter-controller) pages.
+Potter-controller is distributed and installed via Helm. A helm chart is available
+[here](https://storage.googleapis.com/potter-charts/k8s-potter-controller-{version_file_contents}.tgz).
+You can add the corresponding helm chart repository to helm with the following command:
+
+```
+
+ helm repo add potter https://storage.googleapis.com/potter-charts
+
+```
+
+To list the content use
+
+```
+
+helm search repo potter-controller
+
+```
+
+To get chart information use:
+
+```
+
+helm show chart potter/k8s-potter-controller
+
+helm show readme potter/k8s-potter-controller
+
+```
+
+For detailed installation instructions, visit the
+Helm Chart's [README.md](https://github.com/gardener/potter-controller/blob/{version_file_contents}/hub-controller/Readme.md).
+You may also take a look at the [README.md](hhttps://github.com/gardener/potter-hub/blob/main/chart/hub/README.md)
+of the Potter-Hub project.
+
+## Release Notes
+
+{release_notes}
+"""
+
+# Github behaves a bit strange with respect to line endings, so replace all '\n' with spaces but
+# preserve double '\n'
+description_md = description_md.replace("\n\n", " $$$###$$$ ")
+description_md = description_md.replace("\n", " ")
+description_md = description_md.replace(" $$$###$$$ ", "\n")
+
+gh_release.edit(body=description_md)
