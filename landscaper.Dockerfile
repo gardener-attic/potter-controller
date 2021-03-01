@@ -6,7 +6,7 @@
 FROM eu.gcr.io/gardener-project/3rd/golang:1.15.5 AS builder
 
 # Commit hash of version we use, please crosscheck go.mod
-ARG landscaper_commit_hash="c6c3f267bd5f3af60d79fa7adae7ddf70b405dfc"
+ARG landscaper_commit_hash="c077da8895eae68100137e63ab466708dae0aa17"
 
 WORKDIR /go/src/github.com/gardener
 
