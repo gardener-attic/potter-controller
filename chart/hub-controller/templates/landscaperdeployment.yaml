@@ -24,7 +24,7 @@ spec:
         - name: "landscaper-controller"
           securityContext: {}
           image: "{{.Values.landscaper.registry}}/{{ .Values.landscaper.repository }}:{{ .Values.landscaper.tag }}"
-          imagePullPolicy: {{ .Values.landscaper.pullPolicy }}
+          imagePullPolicy: {{ .Values.landscaper.imagePullPolicy }}
           args:
           - "--config=/app/ls/config/config.yaml"
           {{- if .Values.landscaper.deployers }}
