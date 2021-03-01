@@ -28,7 +28,7 @@ import (
 	"github.com/gardener/potter-controller/pkg/synchronize"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/go-logr/logr"
 	"github.com/google/uuid"
 	v1 "k8s.io/api/core/v1"

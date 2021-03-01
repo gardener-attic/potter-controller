@@ -3,7 +3,7 @@ package util
 import (
 	"testing"
 
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 
 	"github.com/arschles/assert"
 )

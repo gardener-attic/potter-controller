@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	kapp "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 

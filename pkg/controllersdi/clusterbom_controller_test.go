@@ -10,7 +10,7 @@ import (
 	testing2 "github.com/gardener/potter-controller/pkg/testing"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/onsi/ginkgo"
 	"github.com/onsi/gomega"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"

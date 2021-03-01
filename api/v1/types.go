@@ -3,7 +3,7 @@ package v1
 import (
 	"encoding/json"
 
-	ls "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	ls "github.com/gardener/landscaper/apis/core/v1alpha1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

@@ -7,7 +7,7 @@ import (
 	hubv1 "github.com/gardener/potter-controller/api/v1"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	ls "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	ls "github.com/gardener/landscaper/apis/core/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/yaml"
@@ -70,7 +70,7 @@ func (f *InstallationFactory) copyAppConfigToInstallation(appConfig *hubv1.Appli
 	installation.Spec = ls.InstallationSpec{
 		Blueprint: ls.BlueprintDefinition{
 			Inline: &ls.InlineBlueprint{
-				Filesystem: blueprintFilesystem,
+				Filesystem: ls.AnyJSON{RawMessage: blueprintFilesystem},
 			},
 		},
 
@@ -103,7 +103,7 @@ func (f *InstallationFactory) generateBlueprintFilesystem(clusterBom *hubv1.Clus
 		DeployItems: []ls.DeployItemTemplate{
 			ls.DeployItemTemplate{
 				Name: appConfig.ID,
-				Type: ls.ExecutionType(appConfig.ConfigType),
+				Type: ls.DeployItemType(appConfig.ConfigType),
 				Labels: map[string]string{
 					hubv1.LabelLandscaperManaged:   hubv1.LabelValueLandscaperManaged,
 					hubv1.LabelApplicationConfigID: appConfig.ID,
@@ -141,7 +141,7 @@ func (f *InstallationFactory) generateBlueprintFilesystem(clusterBom *hubv1.Clus
 			ls.TemplateExecutor{
 				Name:     defaultExecutionName,
 				Type:     ls.SpiffTemplateType,
-				Template: json.RawMessage(executionTemplateBytes),
+				Template: ls.AnyJSON{RawMessage: json.RawMessage(executionTemplateBytes)},
 			},
 		},
 	}
@@ -221,7 +221,7 @@ func (f *InstallationFactory) generateImports(appConfig *hubv1.ApplicationConfig
 		importEntry := ls.ImportDefinition{
 			FieldValueDefinition: ls.FieldValueDefinition{
 				Name:   importParamName,
-				Schema: ls.JSONSchemaDefinition([]byte("{}")),
+				Schema: &ls.JSONSchemaDefinition{RawMessage: []byte("{}")},
 			},
 		}
 
@@ -240,7 +240,7 @@ func (f *InstallationFactory) generateExportsAndExportExecutions(
 		export := ls.ExportDefinition{
 			FieldValueDefinition: ls.FieldValueDefinition{
 				Name:   name,
-				Schema: ls.JSONSchemaDefinition([]byte("{}")),
+				Schema: &ls.JSONSchemaDefinition{RawMessage: []byte("{}")},
 			},
 		}
 
@@ -252,7 +252,7 @@ func (f *InstallationFactory) generateExportsAndExportExecutions(
 		exportExecution := ls.TemplateExecutor{
 			Name:     name,
 			Type:     ls.SpiffTemplateType,
-			Template: exportMappingTemplate,
+			Template: ls.AnyJSON{RawMessage: exportMappingTemplate},
 		}
 
 		exports = append(exports, export)

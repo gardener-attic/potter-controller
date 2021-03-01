@@ -12,7 +12,7 @@ import (
 	"github.com/gardener/potter-controller/pkg/synchronize"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	landscaper "github.com/gardener/landscaper/apis/core/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

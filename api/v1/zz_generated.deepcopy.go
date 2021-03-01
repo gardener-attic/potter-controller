@@ -21,7 +21,7 @@ package v1
 
 import (
 	"encoding/json"
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

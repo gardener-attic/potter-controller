@@ -9,7 +9,7 @@ import (
 
 	hubv1 "github.com/gardener/potter-controller/api/v1"
 
-	external "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	external "github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -55,7 +55,7 @@ func CheckClusterBomCondition(ctx context.Context, clusterBom *hubv1.ClusterBom,
 				os.Exit(1)
 			}
 
-			conditionStatus := readyCondition.Status
+			conditionStatus := readyCondition.Status // nolint
 			if conditionStatus == corev1.ConditionTrue {
 				if storedClusterBom.Status.OverallState != statusOk {
 					Write("ClusterBom overallState is: " + storedClusterBom.Status.OverallState + " (expected ok) ")
@@ -233,7 +233,7 @@ func CheckFailedClusterBom(ctx context.Context, clusterBom *hubv1.ClusterBom, ga
 				os.Exit(1)
 			}
 
-			conditionStatus := readyCondition.Status
+			conditionStatus := readyCondition.Status // nolint
 			if conditionStatus == corev1.ConditionFalse {
 				if storedClusterBom.Status.OverallState != statusFailed {
 					Write("ClusterBom overallState is: " + storedClusterBom.Status.OverallState + " (expected failed) ")

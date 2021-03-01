@@ -27,7 +27,7 @@ import (
 	"github.com/gardener/potter-controller/pkg/synchronize"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	landscaper "github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/go-logr/logr"
 	"github.com/google/uuid"
 	corev1 "k8s.io/api/core/v1"
@@ -565,7 +565,7 @@ func (r *ClusterBomReconciler) copyAppConfigToDeployItem(appconfig *hubv1.Applic
 	deployItem.ObjectMeta.Labels[hubv1.LabelConfigType] = appconfig.ConfigType
 	deployItem.Namespace = clusterbom.Namespace
 	deployItem.Name = util.CreateDeployItemName(clusterbom.GetName(), appconfig.ID)
-	deployItem.Spec.Type = landscaper.ExecutionType(appconfig.ConfigType)
+	deployItem.Spec.Type = landscaper.DeployItemType(appconfig.ConfigType)
 
 	config := hubv1.HubDeployItemConfiguration{
 		TypeMeta: metav1.TypeMeta{

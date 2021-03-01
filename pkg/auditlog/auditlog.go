@@ -62,13 +62,6 @@ type AuditMessageResponse struct {
 	ID string
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 func NewAuditMessage(action Action, clusterBOM, projectName, clusterName, serviceUser, clusterURL, bom,
 	oldBom string, success *bool) *AuditMessageInfo {
 	msg := new(AuditMessageInfo)
@@ -85,10 +78,9 @@ func NewAuditMessage(action Action, clusterBOM, projectName, clusterName, servic
 	return msg
 }
 
-func NewAuditLogger(log logr.Logger) (*AuditLoggerImpl, error) {
-
+func NewAuditLogger(logger logr.Logger) (*AuditLoggerImpl, error) {
 	auditLogger := new(AuditLoggerImpl)
-	auditLogger.log = log
+	auditLogger.log = logger
 	log.Info("Create new audit logger")
 	err := auditLogger.Init()
 
@@ -156,7 +148,7 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 	err = a.enc.Encode(auditMessageInfo)
 	if err != nil {
 		a.log.Error(err, "Error while encoding audit message (will reconnect) ")
-		a.Init()
+		_ = a.Init()
 		return "", err
 	}
 
@@ -166,7 +158,7 @@ func (a *AuditLoggerImpl) Log(auditMessageInfo *AuditMessageInfo) (string, error
 	err = a.dec.Decode(&auditResponse)
 	if err != nil {
 		a.log.Error(err, "Decode error of audit message (will reconnect) ")
-		a.Init()
+		_ = a.Init()
 		return "", err
 	}
 

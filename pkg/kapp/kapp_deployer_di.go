@@ -12,7 +12,7 @@ import (
 	"github.com/gardener/potter-controller/pkg/synchronize"
 	"github.com/gardener/potter-controller/pkg/util"
 
-	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	landscaper "github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/pkg/errors"
 	"github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	corev1 "k8s.io/api/core/v1"

@@ -3,7 +3,7 @@ package testing
 import (
 	"context"
 
-	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	landscaper "github.com/gardener/landscaper/apis/core/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"

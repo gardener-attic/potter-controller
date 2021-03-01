@@ -19,7 +19,7 @@ import (
 	"github.com/gardener/potter-controller/integration-test/app/builder"
 	"github.com/gardener/potter-controller/integration-test/app/util"
 
-	landscaper "github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	landscaper "github.com/gardener/landscaper/apis/core/v1alpha1"
 	log "github.com/sirupsen/logrus"
 	kappcrtl "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"

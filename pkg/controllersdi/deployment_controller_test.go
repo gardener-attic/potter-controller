@@ -17,7 +17,7 @@ import (
 	"github.com/gardener/potter-controller/pkg/util"
 
 	. "github.com/arschles/assert"
-	"github.com/gardener/landscaper/pkg/apis/core/v1alpha1"
+	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	"github.com/go-logr/zapr"
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/release"
