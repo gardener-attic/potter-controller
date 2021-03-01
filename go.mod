@@ -19,7 +19,7 @@ require (
 	github.com/Nvveen/Gotty v0.0.0-20170406111628-a8b993ba6abd // indirect
 	github.com/arschles/assert v1.0.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/gardener/landscaper/apis v0.6.1-0.20210225105446-cc69d9c9425f
+	github.com/gardener/landscaper/apis v0.6.1-0.20210301094647-c077da8895ea
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-logr/logr v0.3.0
 	github.com/go-logr/zapr v0.3.0

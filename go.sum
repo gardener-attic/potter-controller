@@ -252,8 +252,8 @@ github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/gardener/component-spec/bindings-go v0.0.32 h1:1za/V6R9ORWLdyPu+9VzLxg/JpS0VOMvuos9ncCzMas=
 github.com/gardener/component-spec/bindings-go v0.0.32/go.mod h1:53EIwICsuMgbY/MFCv5/lbOR5e1MQe1HY674Io+nGYE=
-github.com/gardener/landscaper/apis v0.6.1-0.20210225105446-cc69d9c9425f h1:P+L+R9ZACg+cuVxl0wDDcD5i6IaaZXAFlohwWsD99BY=
-github.com/gardener/landscaper/apis v0.6.1-0.20210225105446-cc69d9c9425f/go.mod h1:++MW27PlSnbWM4AJipikw62RSprxO5TKVxZ8nh0e4Yw=
+github.com/gardener/landscaper/apis v0.6.1-0.20210301094647-c077da8895ea h1:NNKzY9o/9jIn5q1N98glkhBGkpiyPo12AIm96AxNaSI=
+github.com/gardener/landscaper/apis v0.6.1-0.20210301094647-c077da8895ea/go.mod h1:++MW27PlSnbWM4AJipikw62RSprxO5TKVxZ8nh0e4Yw=
 github.com/garyburd/redigo v0.0.0-20150301180006-535138d7bcd7 h1:LofdAjjjqCSXMwLGgOgnE+rdPuvX9DxCqaHwKy7i/ko=
 github.com/garyburd/redigo v0.0.0-20150301180006-535138d7bcd7/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
