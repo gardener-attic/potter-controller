@@ -59,7 +59,7 @@ spec:
       installName: "mongodb"               
       namespace: "default"   
       tarballAccess:                       # Allows specifying an url pointing to the packaged chart
-        url: "https://kubernetes-charts.storage.googleapis.com/mongodb-7.8.4.tgz" 
+        url: "https://charts.bitnami.com/bitnami/mongodb-7.8.4.tgz" 
 
         customCAData:                      # (optional) This property allows you to add a custom CA, 
                                            # which is useful if your server speaks HTTPS with a self-
@@ -78,7 +78,7 @@ spec:
                                            # The value of this entry will be set in the "Authorization" 
                                            # header when fetching the Chart (e.g. "Basic dX...3dvcmQ="). 
                                            # You could also reference a named secret here (see 
-                                           # https://github.wdf.sap.corp/kubernetes/hub/wiki/Named-Secrets).
+                                           # https://gardener.github.io/potter-docs/controller-docs/docs/special-topics/named-secrets/).
 
 # more application deployments can go here
 ```
