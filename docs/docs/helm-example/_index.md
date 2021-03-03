@@ -4,7 +4,7 @@ type: docs
 weight: 40
 ---
 
-In this example two Helm applications are deployed, one from the SAP-incubator Helm repository and one using a direct chart link. This example uses the project name `apphubdemo` in Gardener and the shoot cluster named `my-cluster`.
+In this example two Helm applications are deployed, one from an incubator Helm Chart repository and one using a direct chart link. This example uses the project name `apphubdemo` in Gardener and the shoot cluster named `my-cluster`.
 
 ```yaml
 apiVersion: "hub.k8s.sap.com/v1"
@@ -50,7 +50,7 @@ spec:
       - atomic                             # Currently only atomic is supported. 
       catalogAccess:                       # Catalog specification where the Helm chart can be found:
         chartName: "karydia"               # Name of the Helm chart
-        repo: "sap-incubator"              # Name of the Helm chart repository
+        repo: "incubator"                  # Name of the Helm chart repository
         chartVersion: "0.3.1"              # Helm chart version to be deployed
 
   - id: mongodb                            # The second application within this Cluster-BoM

@@ -39,7 +39,7 @@ spec:
       - git:
           ref: origin/master
           subPath: namedsecretvalues/kapp/resources
-          url: https://github.tools.sap/kubernetes/potter-examples
+          url: https://github.com/your-path/potter-examples
           secretRef:
             name: potter-examples-access
       template:
@@ -106,7 +106,7 @@ spec:
       - git:
           ref: origin/master
           subPath: namedsecretvalues/kapp/resources
-          url: https://github.tools.sap/kubernetes/potter-examples
+          url: https://github.com/your-path/potter-examples
           secretRef:
             name: potter-examples-access
       template:
@@ -142,7 +142,7 @@ spec:
           authHeader: "Basic dX...3dvcmQ="
     typeSpecificData:
       tarballAccess:
-        url: "https://sap-hub-incubator.storage.googleapis.com/echo-server-1.0.5.tgz" 
+        url: "https://yourpath/echo-server-1.0.5.tgz" 
         secretRef:
           name: logical-name-1
       installName: echoserver

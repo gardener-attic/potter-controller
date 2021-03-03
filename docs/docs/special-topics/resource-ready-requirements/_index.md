@@ -30,7 +30,7 @@ spec:
       catalogAccess:
         chartName: my-chart
         chartVersion: 5.0.0
-        repo: sap-incubator
+        repo: incubator
       installName: my-app
       namespace: my-namespace
   secretRef: my-cluster.kubeconfig

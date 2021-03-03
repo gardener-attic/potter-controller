@@ -6,7 +6,7 @@ weight: 60
 
 In this example, kubernetes resources specified by plain yaml files are deployed. This is a special case of kapp deployments described [here](../kapp-example/).
 
-The provided kubernetes yaml resources are deployed according to the rules specified [here](https://github.com/k14s/kapp/blob/develop/docs/apply-ordering.md), e.g. CRDs and namspaces are deployed before namespaced resources.
+The provided kubernetes yaml resources are deployed according to the rules specified [here](https://carvel.dev/kapp/docs/latest/apply-ordering/), e.g. CRDs and namspaces are deployed before namespaced resources.
 
 The first example uses a zip file containing one yml file with different kubernetes resources, which is accessible via the URL https://storage.googleapis.com/hub-tarballs/integration-tests/zip-http-plain-yml/config.zip. 
 
