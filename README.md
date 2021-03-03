@@ -4,6 +4,8 @@
 ## Description
 The Potter Controller - A Kubernetes extension to manage deployments in Kubernetes clusters. It’s a central component in a [Gardener](https://github.com/gardener/gardener) Kubernetes landscape which doesn’t require any additional components running in the managed cluster.
 
+The end user documentation could be found [here](https://gardener.github.io/potter-docs/controller-docs/home/).
+
 A complete Potter installation consists of a UI (maintain in [this repository](https://github.com/gardener/potter-hub), heavily based on the [kubeapps](https://github.com/kubeapps/kubeapps) project), which can be used to manually deploy [Helm Charts](https://github.com/helm/helm) and [Kapp resources](https://github.com/vmware-tanzu/carvel-kapp/blob/develop/README.md) to Clusters. The UI has been enhanced to work centrally, so that only one Potter installation is required to manage a multitude of Clusters in a remote fashion.
 
 Apart from the UI, Potter introduces the concept of so-called "Cluster Bill-of-Materials" (in short: 'Cluster-BoMs'). These entities are YAML files, describing a list of Kubernetes Deployments which should run in a specific Cluster. Such a YAML file describes the "desired state" of all applications which should be running in a Cluster. Cluster-BoMs can easily be applied to a Cluster with kubectl. After applying such a Cluster-BoM, the Potter-Controller (located in this repository) will start deploying whatever is part of the Cluster-BoM. A Status Section at the end of the BoM provides the detailed deployment states.
