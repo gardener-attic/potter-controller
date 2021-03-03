@@ -35,13 +35,21 @@ func isResourceReady(ctx context.Context, resource runtime.Object) bool {
 
 	// Readiness for different versions of Deployment
 	case *v1.Deployment:
-		return compareNumbers(ctx, typedResource.Status.AvailableReplicas, typedResource.Status.Replicas)
+		return checkIfUpToDate(ctx, typedResource.Generation, typedResource.Status.ObservedGeneration,
+			typedResource.Spec.Replicas, typedResource.Status.UpdatedReplicas, typedResource.Status.Replicas,
+			typedResource.Status.AvailableReplicas)
 	case *v1beta1.Deployment:
-		return compareNumbers(ctx, typedResource.Status.AvailableReplicas, typedResource.Status.Replicas)
+		return checkIfUpToDate(ctx, typedResource.Generation, typedResource.Status.ObservedGeneration,
+			typedResource.Spec.Replicas, typedResource.Status.UpdatedReplicas, typedResource.Status.Replicas,
+			typedResource.Status.AvailableReplicas)
 	case *v1beta2.Deployment:
-		return compareNumbers(ctx, typedResource.Status.AvailableReplicas, typedResource.Status.Replicas)
+		return checkIfUpToDate(ctx, typedResource.Generation, typedResource.Status.ObservedGeneration,
+			typedResource.Spec.Replicas, typedResource.Status.UpdatedReplicas, typedResource.Status.Replicas,
+			typedResource.Status.AvailableReplicas)
 	case *extensions.Deployment:
-		return compareNumbers(ctx, typedResource.Status.AvailableReplicas, typedResource.Status.Replicas)
+		return checkIfUpToDate(ctx, typedResource.Generation, typedResource.Status.ObservedGeneration,
+			typedResource.Spec.Replicas, typedResource.Status.UpdatedReplicas, typedResource.Status.Replicas,
+			typedResource.Status.AvailableReplicas)
 
 	// Readiness for different versions of StatefulSet
 	case *v1.StatefulSet:
@@ -55,6 +63,26 @@ func isResourceReady(ctx context.Context, resource runtime.Object) bool {
 		log.Error(nil, "Unknown resource type")
 		return false
 	}
+}
+
+func checkIfUpToDate(ctx context.Context, generation, observerGeneration int64, specReplicasPointer *int32,
+	statusUpdatedReplicas, statusReplicas, statusAvailableReplicas int32) bool {
+	log := util.GetLoggerFromContext(ctx)
+
+	log.V(util.LogLevelDebug).Info("compare for readiness",
+		"generation", generation,
+		"observerGeneration", observerGeneration,
+		"specReplicasPointer", specReplicasPointer,
+		"statusUpdatedReplicas", statusUpdatedReplicas,
+		"statusReplicas", statusReplicas,
+		"statusAvailableReplicas", statusAvailableReplicas)
+
+	var specReplicas int32 = 1
+	if specReplicasPointer != nil {
+		specReplicas = *specReplicasPointer
+	}
+	return (generation == observerGeneration && specReplicas == statusUpdatedReplicas &&
+		specReplicas == statusReplicas && specReplicas == statusAvailableReplicas)
 }
 
 func compareNumbers(ctx context.Context, num1, num2 int32) bool {
