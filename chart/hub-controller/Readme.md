@@ -1,54 +1,146 @@
-# Hub Controller
+# Potter-Controller
 
-## Configuration and setup
+## Overview
 
-### cluster setup
+The following figure shows the complete setup of the Project Potter, including the components of [potter-controller](https://github.com/gardener/potter-controller) and [potter-hub](https://github.com/gardener/potter-hub). This guide describes only the installation of the potter-controller. For the potter-hub, please refer to the corresponding docs.
 
-In the oidc cluster(e.g garden cluster) apply the following resources:
+![architecture overview](hub-overview-architecture.png)
 
-1. [clusterbom crd](../../config/crd/bases/hub.k8s.sap.com_clusterboms.yaml) 
-1. [clusterbomsync crd](../../config/crd/bases/hub.k8s.sap.com_clusterbomsyncs.yaml)
-1. [apps crd](../../config/crd/bases/kappctrl.k14s.io_app.yaml)
-1. [deployitem crd](../../config/crd/bases/landscaper.gardener.cloud_deployitems.yaml)
-1. the [clusterrole-clusterbom-controller.yaml](../../config/deployments/gardener-roles/clusterrole-clusterbom-controller.yaml) to create a clusterrole, clusterrolebinding and a serviceaccount.
+If you are installing this project into a [Gardener](https://gardener.cloud/) landscape, then the "resource" cluster will be the "garden" cluster from the Gardener landscape. The following guide mainly focuses on that scenario. In principle, it is also possible to store the ClusterBom in some other k8s cluster. Then also the access data to the target k8s clusters, on which the apps should be installed, must be stored in the same namespacs as the ClusterBoms for these target clusters. The access data must be stored as secrets containing the access data as a kubeconfig. The name of such a secret is used in the ClusterBom as the secretRef to the target cluster. 
 
-    > **Note:** The controller needs the path to the persisted service account kubeconfig in order to run.
+## Installation Guide
 
-1. the [clusterrole-project-members.yaml](../../config/deployments/gardener-roles/clusterrole-project-members.yaml) which grants all project users to manage the clusterboms in their owned projects (Gardener specific)
-1. register the mutating webhook at the oidc cluster api server [clusterBomAdmissionHookConfig.yaml](../../config/deployments/clusterBomAdmissionHookConfig.yaml). The mutating webhook checks whether the applied clusterbom customresources are valid.
+**1. Clone the potter-controller repo and cd into the local repo directory**
 
-In hub cluster apply these resources:
+```
+git clone https://github.com/gardener/potter-controller
+cd potter-controller
+```
 
-1. create a hub namespace
-2. create an image pull secret in the hub ns. The default name of the secret is `gcr` but it can be configured in the helm values entry `imagePullSecrets`
-3. the [role-apprepo.yaml](../../config/deployments/hub-roles/role-apprepo.yaml).This will create a service account, a role and a role binding which is needed for the controller to read the apprepositories custom resources.
-    > **Note:** The controller needs the path to the persisted service account kubeconfig file in order to run.
+When you change values in the following steps, it is better to create a new .yaml file and only set the required values instead of overwriting the original values.yaml. Since the values.yaml file in the repository contains some placeholders that are only correctly set in the helm chart from the oci registry, the installation with the values.yaml from the repository may fail.
 
-### configuration
+**2. Create the CRDs on the resource cluster**
 
-> **Note:** in order to run properly please expose the controller with an ingress.
+Make sure you have set your kube context to point to the resource cluster, so that the following kubectl commands are performed within the context of the resource cluster. Select the namespace you want the controller to be installed in.
+```
+kubectl apply -f ./config/crd/bases
+```
 
-Parameter | Description | Default | Type | Required
---- | --- | --- | --- | ---
-`deploymentArgs.reconcileIntervalMinutes` | reconcile interval in minutes | `30` | int | no
-`deploymentArgs.logLevel` | log level  | `warning` | string | no
-`deploymentArgs.configTypes` | supported deployment types  | `helm,kapp` | string | no
-`image.registry` | image registry  | `eu.gcr.io` | string | yes
-`image.repository` | image repository  | `none` | string | yes
-`image.tag` | image tag  | `none` | string | yes
-`image.pullPolicy` | image pull policy  | `IfNotPresent` | string | no
-`imagePullSecrets` | image pull secrets | `gcr` | list | yes
-`ingress.gardenerCertManager` | use the cert manager provided by Gardener to retrieve certificates from Let's Encrypt | `false` | bool | no
-`kappImage.registry` | kapp-controller image registry  | `eu.gcr.io` | string | yes
-`kappImage.repository` | kapp-controller image image repository  | `none` | string | yes
-`kappImage.tag` | kapp-controller image image tag  | `none` | string | yes
-`kappImage.pullPolicy` | kapp-controller image image pull policy  | `IfNotPresent` | string | no
-`namespaces.appRepo` | namespace of app repositories | `hub` | string | yes
-`secretConfig.apprepoCluster` | kubeconfig of a serviceaccount to read the apprepositories | `nil` | multiline-string  | yes
-`secretConfig.hubImagePullSecret` | read image pull secret of hub | `nil` | multiline-string | yes
-`secretConfig.secretCluster` | kubeconfig of a service account to read the kubeconfig secrets | `nil` | multiline-string | yes
-`tokenIssuer` | URL for the validation of bearer tokens of requests to the admission webhook | "" | string | no | 
-`tokenReviewEnabled` | flag to switch validation of bearer tokens on/off of requests to the admission webhook | false | bool | no | 
-`threads.deploymentController` | thread count of deploymentController | `30` | int | no
-`threads.clusterBomController` | thread count of clusterBomController | `10` | int | no
-`threads.clusterBomStateController` | thread count of clusterBomStateController | `10` | int | no
+**3. Create the RBAC primitives on the resource cluster**
+
+Again, for the following kubectl command, use the kube context of the resource cluster.
+```
+kubectl apply -f ./config/deployments/gardener-roles
+```
+
+This service account in `config/deployments/gardener-roles/clusterrole-clusterbom-controller.yaml` is used by the potter-controller to read the target cluster secrets (kubeconfigs) and the CRs (ClusterBoms) on the resource cluster. The cluster role defined in `config/deployments/gardener-roles/clusterrole-project-members.yaml` is used to extend the priveledges of Gardener project members to maintain ClusterBoms in their Garden project namespaces.   
+
+If you plan to store the ClusterBoms in a k8s cluster which is not a Garden cluster, e.g. some Garden shoot cluster, you also need to deploy the secrets containing the access data in form of kubeconfigs to the target shoot clusters (on which you want to install the applications) to that cluster. The secret with the access data of a target shoot cluster must be stored in the same namespace as the ClusterBoms for that cluster. In that situation deploying `config/deployments/gardener-roles/clusterrole-project-members.yaml` is not needed but it is in the responsibility of the administrator to secure the access to the secrets and the ClusterBoms. 
+
+**4. Create the kubeconfig for the service account**
+
+you find a script in `chart/hub-controller/create-kubeconfig-for-serviceaccount.sh`. Open the script and exchange the variables `clusterURL` and `secretName` according to the RBAC primitives you created in Step 3. The `clusterURL` is the url to the kubernetes api server of this cluster, you can find this url in your kubeconfig.  The secret name refers to the automatically created secret for the service account, created earlier. To get the correct secret name, do a `kubectl get secrets` and earch for a secret that follows the naming: `app-hub-controller-token-<something>`. Use this name for the `secretName` field in the script.
+
+Executing the script will generate a kubeconfig which uses the serviceaccount you just created and print it to the shell. This output must be set as a value in the potter-controller Helm Chart under the key `secretConfig.secretCluster`. On macOS, you can pipe the command output to `pbcopy` to copy it in the clipboard. Please ensure the indendation is correct:
+```yaml
+secretConfig:
+  secretCluster: |
+    apiVersion: v1
+    kind: Config
+#...
+```
+
+**5. Install an Ingress Controller in the Potter cluster**
+
+The endpoints that are called by the webhooks (installed in the next step) are exposed via an Ingress. To work correctly, you must have an ingress controller installed in the Potter cluster, such as [ingress-nginx](https://github.com/kubernetes/ingress-nginx) or [traefik](https://github.com/traefik/traefik). If you choose ingress-nginx on a gardener shoot cluster, you can use the `Deployment >  Docker for Mac` installation step. Otherwise refer to the original projects for installation instructions.
+
+Set ingress specific values in the values.yaml file. The host field follows `<abitrary>.<clusterdomain>`. You can get the cluster domain from the kubeconfig by removing the `api` subdomain from the API server URL.  
+
+**6. Install the Webhooks on the resource cluster**
+
+The potter-controller uses two admission webhooks. 
+
+- The webhook configured in `./config/deployments/webhooks/clusterBomAdmissionHookConfig.yaml` checks and mutates Cluster-BoMs. You need to set the URL at `webhooks/clientConfig/url` to `https://<ingress domain of hub controller cluster>/checkClusterBom` with the correct ingress domain. The ingress domain has been configured in the previous step.  **This webhook is mandatory.** 
+
+- The webhook configured in `./config/deployments/webhooks/secretAdmissionHookConfig.yaml` ensures that secrets created and maintained under the control of the hub controller are not changed by others. This webhook is not mandatory. You need to set the URL at `webhooks/clientConfig/url` to `https://<ingress domain of hub controller cluster>/checkSecret` with the correct ingress domain. The ingress domain has been configured in the previous step.
+
+**By default, these webhooks are not secured.** If you want to secure them, you need to configure the API server of the resource cluster as described [here](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#authenticate-apiservers)
+such that the requests to the webhook contain an authorization header with a JWT bearer token. Next, you need to enable the validation of these tokens by deploying the hub controller chart with the following additional values:
+
+```
+deploymentArgs:
+  tokenReviewEnabled: true
+  tokenIssuer: <issuer url>
+```
+
+Deploy the webhook configurations with the following command on the resource cluster:
+
+```
+kubectl apply -f ./config/deployments/webhooks
+```
+
+**7. Create the RBAC primitives on the Potter Cluster**
+
+This service account is used for reading the apprepositories on the Potter cluster. By default it will be created in the `hub` namespace. You can change the namespace by modifying the yaml files. You have to create the namespace in advance.
+
+```
+kubectl apply -f ./config/deployments/hub-roles
+```
+
+**8. Create the kubeconfig for the service account**
+
+First, change to the namespace from the previous step.
+Then download the shell script [create-kubeconfig-for-serviceaccount.sh](./create-kubeconfig-for-serviceaccount.sh). Open the script and exchange the variables `clusterURL` and `secretName` according to the RBAC primitives you just created. The `clusterURL` is the url to the kubernetes api server of this cluster, you can find this url in your kubeconfig.  The secret name refers to the automatically created secret for the service account, created earlier. To get the correct secret name, do a `kubectl get secrets` and earch for a secret that follows the naming: `apprepository-reader-token-<something>`. Use this name for the `secretName` field in the script.
+
+Executing the script will generate a kubeconfig which uses the serviceaccount you just created and print it to the shell. This output must be set as a value in the potter-controller Helm Chart under the key `secretConfig.apprepoCluster`. On macOS, you can pipe the command output to `pbcopy` to copy it in the clipboard. Please ensure the indendation is correct:
+```yaml
+secretConfig:
+  apprepoCluster: |
+    apiVersion: v1
+    kind: Config
+#...
+```
+
+
+**9. Install the potter-controller Helm Chart**
+
+The following table includes all mandatory Chart parameters. For a list of ***all*** possible parameters, see the `Values.yaml`.
+Before installing, **make sure to switch to the correct namespace you want the controller to be installed.**
+
+Parameter | Description | Type | Required
+--- | --- | --- | --- 
+`secretConfig.apprepoCluster` | kubeconfig of the serviceaccount to read the apprepositories | string  | yes
+`secretConfig.secretCluster` | kubeconfig of the service account to read the kubeconfig secrets and CRs | string | yes
+
+The values-override.yaml file contains the values you modified in a seperate file, as described in step 1.
+
+```
+helm repo add potter <url>
+helm install potter-controller potter/potter-controller -f values-override.yaml
+```
+
+**10. Configure Access to target cluster**
+The potter-controller requires a secret with an encoded kubeconfig to access a target cluster. This secret has to be in the same namespace in which the clusterboms are be placed later on.
+To create a secret with an encoded kubeconfig, switch to a namespace that should contain the clusterboms for this target cluster and execute: 
+```
+kubectl create secret generic  target.kubeconfig --from-file=kubeconfig=kubeconfig--target-cluster.yaml
+
+```
+
+
+**11. Create AppRepository CRs (optional)**
+
+For using the `catalogAccess` in ClusterBoms, you must configure AppRepository CRs on your cluster. You can modify and apply the following to create a AppRepository (change the namespace according to your installation).
+
+```
+apiVersion: kubeapps.com/v1alpha1
+kind: AppRepository
+metadata:
+  name: <repo-name>
+  namespace: hub
+spec:
+  type: helm
+  url: <repo-url>
+```
+
+For more information you can refer to the potter-hub Helm Chart.
