@@ -47,7 +47,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags=-buildid= -trimpath -o controller
 
 # ---
 # Needs ubuntu for installing git/openssh
-FROM eu.gcr.io/gardenlinux/gardenlinux:184.0
+FROM debian:bullseye-slim
 
 RUN apt-get -y update && apt-get -y install ca-certificates && update-ca-certificates && apt-get -y install openssh-client git
 
