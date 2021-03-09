@@ -112,7 +112,7 @@ func (r *ClusterBomReconciler) Close() error {
 // +kubebuilder:rbac:groups=hub.k8s.sap.com,resources=clusterboms,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=hub.k8s.sap.com,resources=clusterboms/status,verbs=get;update;patch
 
-func (r *ClusterBomReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) { // nolint
 	if r.AVCheck != nil {
 		r.AVCheck.ReconcileCalled()
 	}

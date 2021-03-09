@@ -162,8 +162,8 @@ func TestParseTypeSpecificData_CatalogAccess(t *testing.T) {
 	scheme := runtime.NewScheme()
 	_ = appRepov1.AddToScheme(scheme)
 
-	k8sClient := fake.NewFakeClientWithScheme(scheme)
-	appRepoClient := fake.NewFakeClientWithScheme(scheme, apprepo)
+	k8sClient := fake.NewFakeClientWithScheme(scheme) // nolint
+	appRepoClient := fake.NewFakeClientWithScheme(scheme, apprepo) // nolint
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, util.CRAndSecretClientKey{}, k8sClient)
@@ -324,7 +324,7 @@ func TestParseTypeSpecificData_InvalidData(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			k8sClient := fake.NewFakeClientWithScheme(scheme)
+			k8sClient := fake.NewFakeClientWithScheme(scheme) // nolint
 
 			ctx := context.Background()
 			ctx = context.WithValue(ctx, util.CRAndSecretClientKey{}, k8sClient)

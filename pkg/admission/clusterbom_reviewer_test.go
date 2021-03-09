@@ -538,19 +538,19 @@ type readerMock struct {
 	existingKeys []client.ObjectKey
 }
 
-func (r *readerMock) Create(ctx context.Context, obj runtime.Object, opts ...client.CreateOption) error {
+func (r *readerMock) Create(ctx context.Context, obj client.Object, opts ...client.CreateOption) error {
 	return nil
 }
 
-func (r *readerMock) Update(ctx context.Context, obj runtime.Object, opts ...client.UpdateOption) error {
+func (r *readerMock) Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
 	return nil
 }
 
-func (r *readerMock) Delete(ctx context.Context, obj runtime.Object, opts ...client.DeleteOption) error {
+func (r *readerMock) Delete(ctx context.Context, obj client.Object, opts ...client.DeleteOption) error {
 	return nil
 }
 
-func (r *readerMock) Get(ctx context.Context, key client.ObjectKey, obj runtime.Object) error {
+func (r *readerMock) Get(ctx context.Context, key client.ObjectKey, obj client.Object) error {
 	for _, existingKey := range r.existingKeys {
 		if existingKey == key {
 			return nil
@@ -559,7 +559,7 @@ func (r *readerMock) Get(ctx context.Context, key client.ObjectKey, obj runtime.
 	return errors.NewNotFound(schema.GroupResource{}, "")
 }
 
-func (r *readerMock) GetUncached(ctx context.Context, key client.ObjectKey, obj runtime.Object) error {
+func (r *readerMock) GetUncached(ctx context.Context, key client.ObjectKey, obj client.Object) error {
 	for _, existingKey := range r.existingKeys {
 		if existingKey == key {
 			return nil
@@ -568,11 +568,11 @@ func (r *readerMock) GetUncached(ctx context.Context, key client.ObjectKey, obj 
 	return errors.NewNotFound(schema.GroupResource{}, "")
 }
 
-func (r *readerMock) List(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (r *readerMock) List(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	return nil
 }
 
-func (r *readerMock) ListUncached(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (r *readerMock) ListUncached(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	return nil
 }
 

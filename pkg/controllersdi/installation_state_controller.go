@@ -51,7 +51,7 @@ func (r *InstallationStateReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *InstallationStateReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *InstallationStateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) { // nolint
 	ctx, logger := util.NewContextAndLogger(r.Log,
 		util.LogKeyInstallationName, req.NamespacedName,
 		util.LogKeyCorrelationID, uuid.New().String())

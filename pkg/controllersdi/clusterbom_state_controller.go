@@ -77,7 +77,7 @@ func (r *ClusterBomStateReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *ClusterBomStateReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *ClusterBomStateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) { // nolint
 	if r.AVCheck != nil {
 		r.AVCheck.ReconcileCalled()
 	}

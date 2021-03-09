@@ -359,7 +359,7 @@ func TestInitNetClientForCatalogChart(t *testing.T) {
 		tc := tc
 
 		// The fake k8s  will contain secret for the CA and header respectively.
-		fakeK8sClient := fakeK8s.NewFakeClient(&corev1.Secret{
+		fakeK8sClient := fakeK8s.NewFakeClient(&corev1.Secret{ // nolint
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      customCASecretName,
 				Namespace: util.GetApprepoNamespace(),
@@ -532,7 +532,7 @@ func TestLoadCatalogChart(t *testing.T) {
 		},
 	}
 
-	fakeK8sClient := fakeK8s.NewFakeClient()
+	fakeK8sClient := fakeK8s.NewFakeClient() // nolint
 	ctx := context.Background()
 
 	loaderFunc := LoadCatalogChart(ctx, apprepo, chartName, chartVersion, fakeReadChart, fakeK8sClient)

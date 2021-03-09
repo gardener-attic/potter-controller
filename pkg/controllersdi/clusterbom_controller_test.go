@@ -2,6 +2,7 @@ package controllersdi
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"testing"
 
@@ -94,7 +95,7 @@ func Test_No_UpdateDi(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -193,7 +194,7 @@ func TestReconcile_Update_Existing_HDC_From_CB(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -263,7 +264,7 @@ func TestReconcile_Create_New_HDC_From_CB(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -352,7 +353,7 @@ func TestReconcile_Delete_Existing_HDC_From_CB(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -415,7 +416,7 @@ func TestReconcile_Delete_Existing_CB(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -497,7 +498,7 @@ func TestReconcile_Remove_Values(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(result).To(gomega.Equal(ctrl.Result{}))
@@ -537,7 +538,7 @@ func Test_HDC_List_Error(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(err).To(gomega.BeNil())
@@ -567,7 +568,7 @@ func Test_CB_Get_Error(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomCRController.Reconcile(testRequest)
+	result, err := clusterBomCRController.Reconcile(context.TODO(), testRequest)
 
 	// Assert Reconciliation without error
 	g.Expect(err).To(gomega.BeNil())
