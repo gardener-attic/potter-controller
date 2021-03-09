@@ -26,6 +26,7 @@ spec:
           image: "{{.Values.landscaper.registry}}/{{ .Values.landscaper.repository }}:{{ .Values.landscaper.tag }}"
           imagePullPolicy: {{ .Values.landscaper.imagePullPolicy }}
           args:
+          - "--disable-webhooks=all"
           - "--config=/app/ls/config/config.yaml"
           {{- if .Values.landscaper.deployers }}
           - "--deployers={{  .Values.landscaper.deployers | join "," }}"

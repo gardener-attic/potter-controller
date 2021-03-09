@@ -3,6 +3,19 @@ kind: ClusterRole
 metadata:
   name: hub.sapcloud.io:controller:hub
 rules:
+  # validatingwebhookconfigurations
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
   # customresourcedefinitions
   - apiGroups:
       - apiextensions.k8s.io
