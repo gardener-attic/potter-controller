@@ -3,6 +3,19 @@ kind: ClusterRole
 metadata:
   name: hub.sapcloud.io:controller:hub
 rules:
+  # customresourcedefinitions
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
   # clusterboms
   - apiGroups:
       - hub.k8s.sap.com
