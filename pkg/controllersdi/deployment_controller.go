@@ -75,7 +75,7 @@ func NewDeploymentReconciler(deployerFactory DeployerFactory, crAndSecretClient 
 	}
 }
 
-func (r *DeploymentReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) { // nolint
 	if r.avCheck != nil {
 		r.avCheck.ReconcileCalled()
 	}

@@ -63,7 +63,7 @@ func TestInitializeBomWithNoPreexistingBom(t *testing.T) {
 
 	scheme := runtime.NewScheme()
 	_ = hubv1.AddToScheme(scheme)
-	k8sClient := fake.NewFakeClientWithScheme(scheme)
+	k8sClient := fake.NewFakeClientWithScheme(scheme) // nolint
 
 	initialBom := buildTestBom(bomNamespace, bomName)
 
@@ -108,7 +108,7 @@ func TestInitializeBomWithPreexistingBom(t *testing.T) {
 
 	scheme := runtime.NewScheme()
 	_ = hubv1.AddToScheme(scheme)
-	k8sClient := fake.NewFakeClientWithScheme(scheme, &preexistingBom)
+	k8sClient := fake.NewFakeClientWithScheme(scheme, &preexistingBom) // nolint
 
 	initialBom := buildTestBom(bomNamespace, bomName)
 
@@ -142,7 +142,7 @@ func TestModifyBom(t *testing.T) {
 
 	scheme := runtime.NewScheme()
 	_ = hubv1.AddToScheme(scheme)
-	k8sClient := fake.NewFakeClientWithScheme(scheme)
+	k8sClient := fake.NewFakeClientWithScheme(scheme) // nolint
 
 	initialBom := buildTestBom(bomNamespace, bomName)
 	initialApplConfig := initialBom.Spec.ApplicationConfigs[0]

@@ -6,6 +6,8 @@ import (
 	"errors"
 	"time"
 
+	"k8s.io/apimachinery/pkg/api/meta"
+
 	"github.com/gardener/landscaper/apis/core/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	errors2 "k8s.io/apimachinery/pkg/api/errors"
@@ -19,35 +21,43 @@ import (
 type TestClientDi struct {
 }
 
+func (t TestClientDi) Scheme() *runtime.Scheme {
+	return nil
+}
+
+func (t TestClientDi) RESTMapper() meta.RESTMapper {
+	return nil
+}
+
 func (t TestClientDi) Status() client.StatusWriter {
 	return nil
 }
 
-func (t TestClientDi) Create(context.Context, runtime.Object, ...client.CreateOption) error {
+func (t TestClientDi) Create(context.Context, client.Object, ...client.CreateOption) error {
 	return nil
 }
 
-func (t TestClientDi) Delete(context.Context, runtime.Object, ...client.DeleteOption) error {
+func (t TestClientDi) Delete(context.Context, client.Object, ...client.DeleteOption) error {
 	return nil
 }
 
-func (t TestClientDi) Update(context.Context, runtime.Object, ...client.UpdateOption) error {
+func (t TestClientDi) Update(context.Context, client.Object, ...client.UpdateOption) error {
 	return nil
 }
 
-func (t TestClientDi) Patch(context.Context, runtime.Object, client.Patch, ...client.PatchOption) error {
+func (t TestClientDi) Patch(context.Context, client.Object, client.Patch, ...client.PatchOption) error {
 	return nil
 }
 
-func (t TestClientDi) DeleteAllOf(context.Context, runtime.Object, ...client.DeleteAllOfOption) error {
+func (t TestClientDi) DeleteAllOf(context.Context, client.Object, ...client.DeleteAllOfOption) error {
 	return nil
 }
 
-func (t TestClientDi) Get(context.Context, client.ObjectKey, runtime.Object) error {
+func (t TestClientDi) Get(context.Context, client.ObjectKey, client.Object) error {
 	return nil
 }
 
-func (t TestClientDi) List(context.Context, runtime.Object, ...client.ListOption) error {
+func (t TestClientDi) List(context.Context, client.ObjectList, ...client.ListOption) error {
 	return nil
 }
 
@@ -123,11 +133,11 @@ func (t UnitTestClientDi) AddClusterBomSync(sync *hubv1.ClusterBomSync) {
 	}
 }
 
-func (t UnitTestClientDi) ListUncached(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (t UnitTestClientDi) ListUncached(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	return t.List(ctx, list, opts...)
 }
 
-func (t UnitTestClientDi) List(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (t UnitTestClientDi) List(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	switch typedList := list.(type) {
 	case *v1alpha1.DeployItemList:
 		for _, hd := range t.DeployItems {
@@ -158,11 +168,11 @@ func (t UnitTestClientDi) List(ctx context.Context, list runtime.Object, opts ..
 	}
 }
 
-func (t UnitTestClientDi) GetUncached(ctx context.Context, key client.ObjectKey, obj runtime.Object) error {
+func (t UnitTestClientDi) GetUncached(ctx context.Context, key client.ObjectKey, obj client.Object) error {
 	return t.Get(ctx, key, obj)
 }
 
-func (t UnitTestClientDi) Get(ctx context.Context, key client.ObjectKey, obj runtime.Object) error {
+func (t UnitTestClientDi) Get(ctx context.Context, key client.ObjectKey, obj client.Object) error {
 	switch typedObj := obj.(type) {
 	case *hubv1.ClusterBom:
 		clusterBom := t.ClusterBoms[key.Name]
@@ -209,7 +219,7 @@ func (t UnitTestClientDi) Get(ctx context.Context, key client.ObjectKey, obj run
 	}
 }
 
-func (t UnitTestClientDi) Create(ctx context.Context, obj runtime.Object, opts ...client.CreateOption) error {
+func (t UnitTestClientDi) Create(ctx context.Context, obj client.Object, opts ...client.CreateOption) error {
 	switch typedObj := obj.(type) {
 	case *hubv1.ClusterBom:
 		key := typedObj.Name
@@ -264,7 +274,7 @@ func (t UnitTestClientDi) Create(ctx context.Context, obj runtime.Object, opts .
 	}
 }
 
-func (t UnitTestClientDi) Delete(ctx context.Context, obj runtime.Object, opts ...client.DeleteOption) error {
+func (t UnitTestClientDi) Delete(ctx context.Context, obj client.Object, opts ...client.DeleteOption) error {
 	switch typedObj := obj.(type) {
 	case *hubv1.ClusterBom:
 		delete(t.ClusterBoms, typedObj.Name)
@@ -287,7 +297,7 @@ func (t UnitTestClientDi) Delete(ctx context.Context, obj runtime.Object, opts .
 	}
 }
 
-func (t UnitTestClientDi) Update(ctx context.Context, obj runtime.Object, opts ...client.UpdateOption) error {
+func (t UnitTestClientDi) Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
 	switch typedObj := obj.(type) {
 	case *hubv1.ClusterBom:
 		key := typedObj.Name
@@ -356,7 +366,7 @@ type UnitTestStatusWriterDi struct {
 	unitTestClient UnitTestClientDi
 }
 
-func (w *UnitTestStatusWriterDi) Update(ctx context.Context, obj runtime.Object, opts ...client.UpdateOption) error {
+func (w *UnitTestStatusWriterDi) Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
 	switch typedObj := obj.(type) {
 	case *hubv1.ClusterBom:
 		key := typedObj.Name
@@ -396,7 +406,7 @@ func (w *UnitTestStatusWriterDi) Update(ctx context.Context, obj runtime.Object,
 	}
 }
 
-func (w *UnitTestStatusWriterDi) Patch(ctx context.Context, obj runtime.Object, patch client.Patch, opts ...client.PatchOption) error {
+func (w *UnitTestStatusWriterDi) Patch(ctx context.Context, obj client.Object, patch client.Patch, opts ...client.PatchOption) error {
 	return nil
 }
 
@@ -429,7 +439,7 @@ func NewUnitTestListErrorClientDi() *UnitTestListErrorClientDi {
 	return &UnitTestListErrorClientDi{*cli}
 }
 
-func (t UnitTestListErrorClientDi) List(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (t UnitTestListErrorClientDi) List(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	return errors.New("dummy error")
 }
 
@@ -443,7 +453,7 @@ func NewUnitTestGetErrorClientDi() *UnitTestGetErrorClientDi {
 	return &UnitTestGetErrorClientDi{*cli}
 }
 
-func (t UnitTestGetErrorClientDi) Get(ctx context.Context, key client.ObjectKey, obj runtime.Object) error {
+func (t UnitTestGetErrorClientDi) Get(ctx context.Context, key client.ObjectKey, obj client.Object) error {
 	return errors.New("dummy error")
 }
 
@@ -457,7 +467,7 @@ func NewUnitTestDeleteErrorClientDi() *UnitTestDeleteErrorClientDi {
 	return &UnitTestDeleteErrorClientDi{*cli}
 }
 
-func (t UnitTestDeleteErrorClientDi) Delete(context.Context, runtime.Object, ...client.DeleteOption) error {
+func (t UnitTestDeleteErrorClientDi) Delete(context.Context, client.Object, ...client.DeleteOption) error {
 	return errors.New("dummy error")
 }
 
@@ -465,11 +475,11 @@ func (t UnitTestDeleteErrorClientDi) Delete(context.Context, runtime.Object, ...
 type UnitTestStatusErrorWriterDi struct {
 }
 
-func (w *UnitTestStatusErrorWriterDi) Update(ctx context.Context, obj runtime.Object, opts ...client.UpdateOption) error {
+func (w *UnitTestStatusErrorWriterDi) Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
 	return errors.New("dummy error")
 }
 
-func (w *UnitTestStatusErrorWriterDi) Patch(ctx context.Context, obj runtime.Object, patch client.Patch, opts ...client.PatchOption) error {
+func (w *UnitTestStatusErrorWriterDi) Patch(ctx context.Context, obj client.Object, patch client.Patch, opts ...client.PatchOption) error {
 	return nil
 }
 
@@ -492,7 +502,7 @@ type HubControllerTestClientDi struct {
 	ReconcileMap *corev1.ConfigMap
 }
 
-func (t HubControllerTestClientDi) Create(ctx context.Context, obj runtime.Object, options ...client.CreateOption) error {
+func (t HubControllerTestClientDi) Create(ctx context.Context, obj client.Object, options ...client.CreateOption) error {
 	switch typedObj := obj.(type) {
 	case *corev1.ConfigMap:
 		if t.ReconcileMap != nil {
@@ -506,7 +516,7 @@ func (t HubControllerTestClientDi) Create(ctx context.Context, obj runtime.Objec
 	return nil
 }
 
-func (t HubControllerTestClientDi) Update(ctx context.Context, obj runtime.Object, options ...client.UpdateOption) error {
+func (t HubControllerTestClientDi) Update(ctx context.Context, obj client.Object, options ...client.UpdateOption) error {
 	switch typedObj := obj.(type) {
 	case *corev1.ConfigMap:
 		if t.ReconcileMap == nil {
@@ -520,15 +530,15 @@ func (t HubControllerTestClientDi) Update(ctx context.Context, obj runtime.Objec
 	return nil
 }
 
-func (t HubControllerTestClientDi) GetUncached(ctx context.Context, cli client.ObjectKey, obj runtime.Object) error {
+func (t HubControllerTestClientDi) GetUncached(ctx context.Context, cli client.ObjectKey, obj client.Object) error {
 	return t.Get(ctx, cli, obj)
 }
 
-func (t HubControllerTestClientDi) ListUncached(ctx context.Context, list runtime.Object, opts ...client.ListOption) error {
+func (t HubControllerTestClientDi) ListUncached(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	return t.List(ctx, list, opts...)
 }
 
-func (t HubControllerTestClientDi) Get(ctx context.Context, cli client.ObjectKey, obj runtime.Object) error {
+func (t HubControllerTestClientDi) Get(ctx context.Context, cli client.ObjectKey, obj client.Object) error {
 	switch typedObj := obj.(type) {
 	case *corev1.ConfigMap:
 		t.ReconcileMap.DeepCopyInto(typedObj)

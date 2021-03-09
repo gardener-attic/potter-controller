@@ -47,7 +47,7 @@ func TestStatusController_NoHDC_NoBOM(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -80,7 +80,7 @@ func TestEmptyClusterBom(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -116,7 +116,7 @@ func TestStatusController_Install_ReadinessPending(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
 
@@ -161,7 +161,7 @@ func TestStatusController_Install_ReadinessOk(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -207,7 +207,7 @@ func TestStatusController_Install_LastNumberSmallerThanCurrentNumber(t *testing.
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -255,7 +255,7 @@ func TestStatusController_Install_SuccessNumberSmallerThanLastNumber(t *testing.
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
 
@@ -300,7 +300,7 @@ func TestStatusController_Remove_LastNumberSmallerThanCurrentNumber(t *testing.T
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -346,7 +346,7 @@ func TestStatusController_Remove_Failed(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -392,7 +392,7 @@ func TestStatusController_Remove_Ok(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -428,7 +428,7 @@ func TestStatusController_StatusChange(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -493,7 +493,7 @@ func TestStatusController_StatusChange_Complex(t *testing.T) {
 	}
 
 	// execute reconcile logic to be tested
-	result, err := controller.Reconcile(request)
+	result, err := controller.Reconcile(context.TODO(), request)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -540,7 +540,7 @@ func TestStatusController_StatusChange_NoDeploymentConfigs(t *testing.T) {
 		},
 	}
 
-	result, err := controller.Reconcile(request)
+	result, err := controller.Reconcile(context.TODO(), request)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -577,7 +577,7 @@ func TestStatusController_StatusChange_NothingChanged(t *testing.T) {
 		},
 	}
 
-	result, err := controller.Reconcile(request)
+	result, err := controller.Reconcile(context.TODO(), request)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -614,7 +614,7 @@ func TestStatusController_ClusterBom_And_HDC_Removed(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -649,7 +649,7 @@ func TestStatusController_RemoveDeploymentConfig(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -687,7 +687,7 @@ func TestStatusController_ClusterBomRemoved(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -721,7 +721,7 @@ func TestStatusController_DeploymentConfigWithoutStatus(t *testing.T) {
 		},
 	}
 
-	result, err := controller.Reconcile(request)
+	result, err := controller.Reconcile(context.TODO(), request)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -755,7 +755,7 @@ func TestStatusController_ErrorGet(t *testing.T) {
 	}
 
 	// Execute reconcile logic. This should fail, since the Get method of the client is prepared to fail.
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.True(t, result.Requeue, "requeue")
 	assert.Nil(t, err, "reconcile error")
@@ -785,7 +785,7 @@ func TestStatusController_ErrorList(t *testing.T) {
 	}
 
 	// Execute reconcile logic. This should fail, since the List method of the client is prepared to fail.
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	// assert that reconcile fails
 
@@ -822,7 +822,7 @@ func TestStatusController_ErrorStatusUpdate(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.True(t, result.Requeue, "requeue")
 	assert.Nil(t, err, "reconcile error")
@@ -856,7 +856,7 @@ func TestStatusController_NoCluster(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -891,7 +891,7 @@ func TestStatusController_NoCluster_OnlyCB(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")
@@ -926,7 +926,7 @@ func TestStatusController_NoCluster_DeleteHDC(t *testing.T) {
 		},
 	}
 
-	result, err := clusterBomStateController.Reconcile(testRequest)
+	result, err := clusterBomStateController.Reconcile(context.TODO(), testRequest)
 
 	assert.Nil(t, err, "reconcile error")
 	assert.False(t, result.Requeue, "requeue")

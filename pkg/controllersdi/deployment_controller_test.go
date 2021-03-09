@@ -70,7 +70,7 @@ func TestReconcileWithGetHDCErr(t *testing.T) {
 			fakeClient := testUtils.NewReactiveMockClient(reactorFuncs)
 			controller := newDeploymentReconciler(&fakeClient, &helmFacadeMock{})
 
-			result, err := controller.Reconcile(ctrl.Request{
+			result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 				NamespacedName: types.NamespacedName{
 					Namespace: testNS,
 					Name:      testHDCName,
@@ -140,7 +140,7 @@ func TestReconcileWithInvalidSecretRef(t *testing.T) {
 	fakeClient := testUtils.NewReactiveMockClient(map[string]func() error{}, &newDeployItem)
 	controller := newDeploymentReconciler(&fakeClient, &helmFacadeMock{})
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -234,7 +234,7 @@ func TestReconcileWithDesiredStateEqualToActualState(t *testing.T) {
 	fakeClient := testUtils.NewReactiveMockClient(map[string]func() error{}, &newDeployItem)
 	controller := newDeploymentReconciler(&fakeClient, &helmFacadeMock{})
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -361,7 +361,7 @@ func TestInstallOrUpdate_Successful(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -466,7 +466,7 @@ func TestInstallOrUpdate_WithInvalidTypeSpecificData(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -571,7 +571,7 @@ func TestRemove_Successful(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -666,7 +666,7 @@ func Test_TooEarly_Requeue_After_State_Failed(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -755,7 +755,7 @@ func Test_Install_After_State_Failed(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,
@@ -864,7 +864,7 @@ func Test_Install_Fails_After_State_Failed(t *testing.T) {
 	hFacadeMock := &helmFacadeMock{iouReturn: errors.New(errorString)}
 	controller := newDeploymentReconciler(&fakeClient, hFacadeMock)
 
-	result, err := controller.Reconcile(ctrl.Request{
+	result, err := controller.Reconcile(context.TODO(), ctrl.Request{
 		NamespacedName: types.NamespacedName{
 			Namespace: testNS,
 			Name:      testHDCName,

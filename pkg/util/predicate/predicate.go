@@ -15,19 +15,19 @@ func LandscaperManaged() predicate.Predicate {
 type landscaperManaged struct{}
 
 func (l *landscaperManaged) Create(ev event.CreateEvent) bool {
-	return util.HasLabel(ev.Meta, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
+	return util.HasLabel(ev.Object, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
 }
 
 func (l *landscaperManaged) Delete(ev event.DeleteEvent) bool {
-	return util.HasLabel(ev.Meta, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
+	return util.HasLabel(ev.Object, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
 }
 
 func (l *landscaperManaged) Update(ev event.UpdateEvent) bool {
-	return util.HasLabel(ev.MetaNew, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
+	return util.HasLabel(ev.ObjectNew, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
 }
 
 func (l *landscaperManaged) Generic(ev event.GenericEvent) bool {
-	return util.HasLabel(ev.Meta, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
+	return util.HasLabel(ev.Object, hubv1.LabelLandscaperManaged, hubv1.LabelValueLandscaperManaged)
 }
 
 func Not(p predicate.Predicate) predicate.Predicate {
