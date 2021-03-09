@@ -1,4 +1,4 @@
-FROM eu.gcr.io/gardener-project/3rd/golang:1.15.5
+FROM eu.gcr.io/gardener-project/3rd/golang:1.16.0
 
 ARG kapp_controller_version="v0.14.0"
 
@@ -47,7 +47,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags=-buildid= -trimpath -o controller
 
 # ---
 # Needs ubuntu for installing git/openssh
-FROM debian:bullseye-slim
+FROM eu.gcr.io/gardenlinux/gardenlinux:318.4-oci-base-318.4-14bd4f
 
 RUN apt-get -y update && apt-get -y install ca-certificates && update-ca-certificates && apt-get -y install openssh-client git
 

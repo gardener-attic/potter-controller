@@ -20,7 +20,7 @@ ARG EFFECTIVE_VERSION
 RUN make install EFFECTIVE_VERSION=$EFFECTIVE_VERSION
 
 #### BASE ####
-FROM debian:bullseye-slim AS base
+FROM eu.gcr.io/gardenlinux/gardenlinux:318.4-oci-base-318.4-14bd4f AS base
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confnew" install ca-certificates \
     && rm -rf /var/lib/apt /var/cache/apt
