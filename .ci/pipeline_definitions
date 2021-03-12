@@ -26,16 +26,16 @@ potter-controller:
       publish:
         dockerimages:
           hub-controller:
-            registry: 'hub-pipeline-gcr-public'
+            registry: 'potter-image-registry-pipeline'
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/potter-controller'
             tag_as_latest: true
           kapp-controller:
-            registry: 'hub-pipeline-gcr-public'
+            registry: 'potter-image-registry-pipeline'
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/kapp-controller'
             dockerfile: 'kapp-controller.Dockerfile'
             tag_as_latest: true
           landscaper:
-            registry: 'hub-pipeline-gcr-public'
+            registry: 'potter-image-registry-pipeline'
             image: 'eu.gcr.io/sap-gcp-cp-k8s-stable-hub/potter/landscaper'
             dockerfile: 'landscaper.Dockerfile'
             tag_as_latest: true
