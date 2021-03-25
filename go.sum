@@ -339,8 +339,8 @@ github.com/fvbommel/sortorder v1.0.1 h1:dSnXLt4mJYH25uDDGa3biZNQsozaUWDSWeKJ0qqF
 github.com/fvbommel/sortorder v1.0.1/go.mod h1:uk88iVf1ovNn1iLfgUVU2F9o5eO30ui720w+kxuqRs0=
 github.com/gardener/component-spec/bindings-go v0.0.32 h1:1za/V6R9ORWLdyPu+9VzLxg/JpS0VOMvuos9ncCzMas=
 github.com/gardener/component-spec/bindings-go v0.0.32/go.mod h1:53EIwICsuMgbY/MFCv5/lbOR5e1MQe1HY674Io+nGYE=
-github.com/gardener/landscaper/apis v0.6.2 h1:lBz8QLgfh+7hS0viMNWrR5lufThKzTSnsGw4SBYjK3A=
-github.com/gardener/landscaper/apis v0.6.2/go.mod h1:++MW27PlSnbWM4AJipikw62RSprxO5TKVxZ8nh0e4Yw=
+github.com/gardener/landscaper/apis v0.7.0 h1:68CXx/Un3rI5x4W1dEk8ZhR4gblyuvnyR6iGRkairtA=
+github.com/gardener/landscaper/apis v0.7.0/go.mod h1:++MW27PlSnbWM4AJipikw62RSprxO5TKVxZ8nh0e4Yw=
 github.com/garyburd/redigo v1.6.2 h1:yE/pwKCrbLpLpQICzYTeZ7JsTA/C53wFTJHaEtRqniM=
 github.com/garyburd/redigo v1.6.2/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
