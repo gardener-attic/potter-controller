@@ -65,9 +65,10 @@ potter-controller:
           - --test-type nolandscaper
           output_dir: integration_test
         helm:
+          trait_depends:
+          - publish
           depends:
           - run_integration_test
-          - publish
           execute:
           - build_and_push_helm.py
         update_release:
@@ -77,6 +78,7 @@ potter-controller:
             BACKEND_TEST_PATH: backend_test_path
           execute:
           - update_release.py
-          depends:
+          trait_depends:
           - release
+          depends:
           - run_integration_test
