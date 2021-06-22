@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gardener/landscaper/apis/core/v1alpha1"
@@ -331,6 +332,7 @@ func (r *clusterBomReviewer) mutateClusterBom(report *report, clusterBom *hubv1.
 	r.patchFinalizer(report)
 	r.patchSecretValues(report, clusterBom, oldApplConfigs)
 	r.patchNamedSecretValues(report, clusterBom, oldApplConfigs)
+	r.patchMissingFields(report)
 }
 
 // Adds secretRef to labels
@@ -411,6 +413,83 @@ func (r *clusterBomReviewer) patchSecretValues(report *report, clusterBom *hubv1
 		if err != nil {
 			report.deny("error when handling secret values: " + err.Error())
 			return
+		}
+	}
+
+	report.appendPatches(patches...)
+}
+
+func (r *clusterBomReviewer) patchMissingFields(report *report) {
+	r.log.Info("Patching ReadyRequirements")
+
+	patches := []patch{}
+
+	rawClusterBom := make(map[string]interface{})
+	err := json.Unmarshal(r.requestReview.Request.Object.Raw, &rawClusterBom)
+	if err != nil {
+		r.log.V(util.LogLevelWarning).Info("error when unmarshalling clusterbom to map", "error", err)
+		report.deny("error when unmarshalling clusterbom to map: " + err.Error())
+		return
+	}
+
+	rawSpec := rawClusterBom["spec"]
+	spec, ok := rawSpec.(map[string]interface{})
+	if !ok {
+		msg := "error when casting clusterbom spec"
+		r.log.V(util.LogLevelWarning).Info(msg)
+		report.deny(msg)
+		return
+	}
+
+	rawAppConfigs, ok := spec["applicationConfigs"]
+	if !ok {
+		return
+	}
+
+	rawAppConfigList, ok := rawAppConfigs.([]interface{})
+	if !ok {
+		msg := "error when casting appConfigs"
+		r.log.V(util.LogLevelWarning).Info(msg)
+		report.deny(msg)
+		return
+	}
+
+	for i := range rawAppConfigList {
+		rawAppConfig := rawAppConfigList[i]
+
+		appConfig, ok := rawAppConfig.(map[string]interface{})
+		if !ok {
+			msg := "error when casting appConfig"
+			r.log.V(util.LogLevelWarning).Info(msg)
+			report.deny(msg)
+			return
+		}
+
+		_, ok = appConfig["readyRequirements"]
+		if !ok {
+			patches = append(patches, patch{
+				Op:    "add",
+				Path:  "/spec/applicationConfigs/" + strconv.Itoa(i) + "/readyRequirements",
+				Value: &hubv1.ReadyRequirements{},
+			})
+		}
+
+		_, ok = appConfig["internalImportParameters"]
+		if !ok {
+			patches = append(patches, patch{
+				Op:    "add",
+				Path:  "/spec/applicationConfigs/" + strconv.Itoa(i) + "/internalImportParameters",
+				Value: &hubv1.InternalImportParameters{},
+			})
+		}
+
+		_, ok = appConfig["exportParameters"]
+		if !ok {
+			patches = append(patches, patch{
+				Op:    "add",
+				Path:  "/spec/applicationConfigs/" + strconv.Itoa(i) + "/exportParameters",
+				Value: &hubv1.ExportParameters{},
+			})
 		}
 	}
 
