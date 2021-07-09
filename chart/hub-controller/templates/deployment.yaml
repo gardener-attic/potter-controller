@@ -6,6 +6,9 @@ metadata:
   name: {{ include "chart.fullname" . }}
   labels:
     {{- include "chart.labels" . | nindent 4 }}
+  annotations:
+    # needed to update pods such that rotated secrets are fetched
+    rollme: {{ randAlphaNum 5 | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
