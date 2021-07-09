@@ -247,12 +247,22 @@ subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
     name: system:serviceaccount:default:app-hub-controller
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:serviceaccount:default:app-hub-controller2
 
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: app-hub-controller
+  namespace: default # TODO edit this namespace
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-hub-controller2
   namespace: default # TODO edit this namespace
 
 
