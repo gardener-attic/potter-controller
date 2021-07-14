@@ -31,10 +31,20 @@ subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
     name: system:serviceaccount:hub:apprepository-reader
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:serviceaccount:hub:apprepository-reader2
 
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: apprepository-reader
+  namespace: hub
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: apprepository-reader2
   namespace: hub
