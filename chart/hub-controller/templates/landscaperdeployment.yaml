@@ -21,7 +21,7 @@ spec:
         - name: {{ . }}
       {{- end }}
     {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext: {}
       containers:
         - name: "landscaper-controller"
