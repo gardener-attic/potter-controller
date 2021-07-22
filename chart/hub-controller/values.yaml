@@ -61,7 +61,8 @@ fullnameOverride: ""
 serviceAccount:
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
+  # The name of the service account to use. Only k8s-potter-controller and k8s-potter-controller-2 are allowed
+  # which could be used for credential rotation
   name: k8s-potter-controller
 
 podSecurityContext: {}
