@@ -19,6 +19,10 @@ spec:
       labels:
         {{- include "chart.selectorLabels" . | nindent 8 }}
         {{ .Values.affinityLabel.key }}: {{ .Values.affinityLabel.value }}
+      {{- if .Values.linkerd.enabled }}
+      annotations:
+        linkerd.io/inject: enabled
+      {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
