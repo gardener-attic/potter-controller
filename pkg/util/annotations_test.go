@@ -28,3 +28,4 @@ func TestAnnotations(t *testing.T) {
 	ok = HasAnnotation(obj, testKey, testValue)
 	assert.False(t, ok, "Failed to remove and check annotation")
 }
+
