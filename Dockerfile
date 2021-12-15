@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM eu.gcr.io/gardener-project/3rd/golang:1.16.0 as builder
+FROM eu.gcr.io/gardener-project/3rd/golang:1.16.11 as builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -16,7 +16,7 @@ COPY pkg/ pkg/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go
 
-FROM eu.gcr.io/gardenlinux/gardenlinux:318.4-oci-base-318.4-14bd4f
+FROM eu.gcr.io/gardenlinux/gardenlinux:590.0-276f22-amd64-base-slim
 
 RUN apt-get -y update && apt-get -y install ca-certificates && update-ca-certificates
 

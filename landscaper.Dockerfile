@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #### BUILDER ####
-FROM eu.gcr.io/gardener-project/3rd/golang:1.16.0 AS builder
+FROM eu.gcr.io/gardener-project/3rd/golang:1.16.11 AS builder
 
 # Commit hash of version we use, please crosscheck go.mod
 ARG landscaper_commit_hash="c077da8895eae68100137e63ab466708dae0aa17"
@@ -20,7 +20,7 @@ ARG EFFECTIVE_VERSION
 RUN make install EFFECTIVE_VERSION=$EFFECTIVE_VERSION
 
 #### BASE ####
-FROM eu.gcr.io/gardenlinux/gardenlinux:318.4-oci-base-318.4-14bd4f AS base
+FROM eu.gcr.io/gardenlinux/gardenlinux:590.0-276f22-amd64-base-slim AS base
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confnew" install ca-certificates \
     && rm -rf /var/lib/apt /var/cache/apt
