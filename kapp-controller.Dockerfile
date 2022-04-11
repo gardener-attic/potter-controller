@@ -1,4 +1,4 @@
-FROM eu.gcr.io/gardener-project/3rd/golang:1.16.11
+FROM eu.gcr.io/gardener-project/3rd/golang:1.17.8
 
 ARG kapp_controller_version="v0.14.0"
 
