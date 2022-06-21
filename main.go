@@ -414,7 +414,7 @@ func getUncachedClient(config *rest.Config) synchronize.UncachedClient {
 
 	uncachedClient, err := synchronize.NewUncachedClient(config, client.Options{Scheme: scheme})
 	if err != nil {
-		setupLog.Error(err, "Unable to create uncached client")
+		setupLog.Error(err, "Unable to create uncached client, config="+config.String())
 		os.Exit(1)
 	}
 
