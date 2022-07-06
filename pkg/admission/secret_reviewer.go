@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"reflect"
 
 	"github.com/go-logr/logr"
 	"k8s.io/api/admission/v1beta1"
@@ -61,6 +62,11 @@ func (reviewer *secretReviewer) reviewUpdate() *v1beta1.AdmissionReview {
 	ok := reviewer.checkResponsibility(oldSecret) || reviewer.checkResponsibility(newSecret)
 	if !ok {
 		reviewer.log.Error(nil, "Secret admission hook called for updating a secret without label")
+		return reviewer.allow()
+	}
+
+	if reflect.DeepEqual(oldSecret.Data, newSecret.Data) {
+		reviewer.log.V(util.LogLevelDebug).Info( "Secret admission hook called for an unchanged secret")
 		return reviewer.allow()
 	}
 
