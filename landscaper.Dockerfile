@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #### BUILDER ####
-FROM eu.gcr.io/gardener-project/3rd/golang:1.17.8 AS builder
+FROM eu.gcr.io/gardener-project/3rd/golang:1.17.9 AS builder
 
 # Commit hash of version we use, please crosscheck go.mod
 ARG landscaper_commit_hash="c077da8895eae68100137e63ab466708dae0aa17"
@@ -20,26 +20,7 @@ ARG EFFECTIVE_VERSION
 RUN make install EFFECTIVE_VERSION=$EFFECTIVE_VERSION
 
 #### BASE ####
-FROM eu.gcr.io/gardenlinux/gardenlinux:590.0-276f22-amd64-base-slim AS base
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get --yes -o Dpkg::Options::="--force-confnew" install ca-certificates \
-    && rm -rf /var/lib/apt /var/cache/apt
-
-# Create appuser
-ENV USER=appuser
-ENV UID=10001
-# See https://stackoverflow.com/a/55757473/12429735RUN
-# and https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-RUN adduser \
---disabled-password \
---gecos "" \
---home "/nonexistent" \
---shell "/sbin/nologin" \
---no-create-home \
---uid "${UID}" \
-"$USER"
-
-USER ${USER}:${USER}
+FROM gcr.io/distroless/static-debian11:nonroot AS base
 
 #### Helm Deployer Controller ####
 FROM base as landscaper-controller
