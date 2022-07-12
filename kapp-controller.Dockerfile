@@ -1,4 +1,4 @@
-FROM eu.gcr.io/gardener-project/3rd/golang:1.17.9
+FROM eu.gcr.io/gardener-project/3rd/golang:1.17.9 as builder
 
 ARG kapp_controller_version="v0.14.0"
 
@@ -45,53 +45,24 @@ RUN wget -O- https://github.com/mozilla/sops/releases/download/v3.6.1/sops-v3.6.
 # kapp-controller
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags=-buildid= -trimpath -o controller ./cmd/main.go
 
-# ---
-# Needs ubuntu for installing git/openssh
-FROM eu.gcr.io/gardenlinux/gardenlinux:590.0-276f22-amd64-base-slim
-
-RUN apt-get -y update && apt-get -y install ca-certificates && update-ca-certificates && apt-get -y install openssh-client git
-
-# Create appusergroup and appuser
-ENV GROUP=appusergroup
-ENV GUID=10002
-
-RUN addgroup --gid "${GUID}" "$GROUP"
-
-ENV USER=appuser
-ENV UID=10001
-
-# See https://stackoverflow.com/a/55757473/12429735RUN
-# and https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-RUN adduser \
---disabled-password \
---gecos "" \
---home "/nonexistent" \
---shell "/sbin/nologin" \
---no-create-home \
---uid "${UID}" \
---gid "${GUID}" \
-"$USER"
-
-# Disabled it must be checked if this allows end users to provide additional custom ca certs
-# RUN chmod g+w /etc/ssl/certs/ca-certificates.crt && chgrp ${GROUP} /etc/ssl/certs/ca-certificates.crt
-
-USER ${USER}
+#### BASE ####
+FROM gcr.io/distroless/static-debian11:nonroot AS base
 
 # Name it kapp-controller to identify it easier in process tree
-COPY --from=0 /go/src/github.com/vmware-tanzu/carvel-kapp-controller/controller kapp-controller
+COPY --from=builder /go/src/github.com/vmware-tanzu/carvel-kapp-controller/controller kapp-controller
 
 # fetchers
-COPY --from=0 /helm-unpacked/linux-amd64/helm .
-COPY --from=0 /usr/local/bin/imgpkg .
-COPY --from=0 /usr/local/bin/vendir .
+COPY --from=builder /helm-unpacked/linux-amd64/helm .
+COPY --from=builder /usr/local/bin/imgpkg .
+COPY --from=builder /usr/local/bin/vendir .
 
 # templaters
-COPY --from=0 /usr/local/bin/ytt .
-COPY --from=0 /usr/local/bin/kbld .
-COPY --from=0 /usr/local/bin/sops .
+COPY --from=builder /usr/local/bin/ytt .
+COPY --from=builder /usr/local/bin/kbld .
+COPY --from=builder /usr/local/bin/sops .
 
 # deployers
-COPY --from=0 /usr/local/bin/kapp .
+COPY --from=builder /usr/local/bin/kapp .
 
 ENV PATH="/:${PATH}"
 ENTRYPOINT ["/kapp-controller"]
