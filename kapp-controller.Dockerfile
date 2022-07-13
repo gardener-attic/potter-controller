@@ -12,24 +12,24 @@ WORKDIR /go/src/github.com/vmware-tanzu/carvel-kapp-controller/
 RUN apt-get -y update && apt-get -y install ca-certificates && update-ca-certificates
 
 # k14s
-RUN wget -O- https://github.com/k14s/ytt/releases/download/v0.30.0/ytt-linux-amd64 > /usr/local/bin/ytt && \
-  echo "456e58c70aef5cd4946d29ed106c2b2acbb4d0d5e99129e526ecb4a859a36145  /usr/local/bin/ytt" | sha256sum -c - && \
+RUN wget -O- https://github.com/k14s/ytt/releases/download/v0.41.1/ytt-linux-amd64 > /usr/local/bin/ytt && \
+  echo "65dbc4f3a4a2ed84296dd1b323e8e7bd77e488fa7540d12dd36cf7fb2fc77c03  /usr/local/bin/ytt" | sha256sum -c - && \
   chmod +x /usr/local/bin/ytt && ytt version
 
-RUN wget -O- https://github.com/k14s/kapp/releases/download/v0.34.0/kapp-linux-amd64 > /usr/local/bin/kapp && \
-  echo "e170193c40ff5dff9f9274c25048de1f50e23c69e8406df274fbb416d5862d7f  /usr/local/bin/kapp" | sha256sum -c - && \
+RUN wget -O- https://github.com/k14s/kapp/releases/download/v0.49.0/kapp-linux-amd64 > /usr/local/bin/kapp && \
+  echo "dec5040d90478fdf0af3c1548d46f9ded642f156245bba83fe99171c8461e4f7  /usr/local/bin/kapp" | sha256sum -c - && \
   chmod +x /usr/local/bin/kapp && kapp version
 
-RUN wget -O- https://github.com/k14s/kbld/releases/download/v0.24.0/kbld-linux-amd64 > /usr/local/bin/kbld && \
-  echo "63f06c428cacd66e4ebbd23df3f04214109bc44ee623c7c81ecb9aa35c192c65  /usr/local/bin/kbld" | sha256sum -c - && \
+RUN wget -O- https://github.com/k14s/kbld/releases/download/v0.34.0/kbld-linux-amd64 > /usr/local/bin/kbld && \
+  echo "67c86ece94a3747b2e011a5b72044b69f2594ca807621b1e1e4c805f6abcaeef  /usr/local/bin/kbld" | sha256sum -c - && \
   chmod +x /usr/local/bin/kbld && kbld version
 
-RUN wget -O- https://github.com/k14s/imgpkg/releases/download/v0.2.0/imgpkg-linux-amd64 > /usr/local/bin/imgpkg && \
-  echo "57a73c4721c39f815408f486c1acfb720af82450996e2bfdf4c2c280d8a28dcc  /usr/local/bin/imgpkg" | sha256sum -c - && \
+RUN wget -O- https://github.com/k14s/imgpkg/releases/download/v0.29.0/imgpkg-linux-amd64 > /usr/local/bin/imgpkg && \
+  echo "c7190adcb8445480e4e457c899aecdf7ca98606c625493b904c0eb2ab721ce19  /usr/local/bin/imgpkg" | sha256sum -c - && \
   chmod +x /usr/local/bin/imgpkg && imgpkg version
 
-RUN wget -O- https://github.com/vmware-tanzu/carvel-vendir/releases/download/v0.14.0/vendir-linux-amd64 > /usr/local/bin/vendir && \
-  echo "c224bdfe74df326d7e75b4c50669ec5976b95c0ff9a27d25c6e1833d0c781946  /usr/local/bin/vendir" | shasum -c - && \
+RUN wget -O- https://github.com/vmware-tanzu/carvel-vendir/releases/download/v0.28.1/vendir-linux-amd64 > /usr/local/bin/vendir && \
+  echo "9cf05073b88ba702c3ed5be67361fefecef3d34cc16fea684e0b7c09b7b18788  /usr/local/bin/vendir" | shasum -c - && \
   chmod +x /usr/local/bin/vendir && vendir version
 
 # helm
@@ -38,8 +38,8 @@ RUN wget -O- https://get.helm.sh/helm-v2.17.0-linux-amd64.tar.gz > /helm && \
   mkdir /helm-unpacked && tar -C /helm-unpacked -xzvf /helm
 
 # sops
-RUN wget -O- https://github.com/mozilla/sops/releases/download/v3.6.1/sops-v3.6.1.linux > /usr/local/bin/sops && \
-  echo "b2252aa00836c72534471e1099fa22fab2133329b62d7826b5ac49511fcc8997  /usr/local/bin/sops" | sha256sum -c - && \
+RUN wget -O- https://github.com/mozilla/sops/releases/download/v3.7.3/sops-v3.7.3.linux > /usr/local/bin/sops && \
+  echo "53aec65e45f62a769ff24b7e5384f0c82d62668dd96ed56685f649da114b4dbb  /usr/local/bin/sops" | sha256sum -c - && \
   chmod +x /usr/local/bin/sops && sops -v
 
 # kapp-controller
