@@ -49,7 +49,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags=-buildid= -trimpath -o controller
 FROM gcr.io/distroless/static-debian11:nonroot AS base
 
 # Name it kapp-controller to identify it easier in process tree
-COPY --from=builder /go/src/github.com/vmware-tanzu/carvel-kapp-controller/controller kapp-controller
+COPY --from=builder /go/src/github.com/vmware-tanzu/carvel-kapp-controller/controller /kapp-controller
 
 # fetchers
 COPY --from=builder /helm-unpacked/linux-amd64/helm .
