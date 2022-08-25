@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #### BUILDER ####
-FROM eu.gcr.io/gardener-project/3rd/golang:1.17.9 AS builder
+FROM golang:1.17.13 AS builder
 
 # Commit hash of version we use, please crosscheck go.mod
 ARG landscaper_commit_hash="c077da8895eae68100137e63ab466708dae0aa17"

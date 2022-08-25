@@ -4,6 +4,7 @@ go 1.16
 
 replace (
 	github.com/Masterminds/squirrel => github.com/Masterminds/squirrel v1.5.3
+	github.com/containerd/containerd => github.com/containerd/containerd v1.4.13
 	github.com/docker/distribution => github.com/distribution/distribution v2.7.1+incompatible
 	github.com/docker/docker => github.com/moby/moby v20.10.5+incompatible
 	golang.org/x/text => golang.org/x/text v0.3.7
@@ -41,7 +42,7 @@ require (
 	go.uber.org/zap v1.19.1
 	golang.org/x/oauth2 v0.0.0-20211028175245-ba495a64dcb5
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.43.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	// If you update helm you need to update the kubernetes libs as well
 	helm.sh/helm/v3 v3.5.3
