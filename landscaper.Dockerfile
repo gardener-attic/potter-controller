@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #### BUILDER ####
-FROM golang:1.18.5 AS builder
+FROM golang:1.18.6 AS builder
 
 # Commit hash of version we use, please crosscheck go.mod
 ARG landscaper_commit_hash="c077da8895eae68100137e63ab466708dae0aa17"
