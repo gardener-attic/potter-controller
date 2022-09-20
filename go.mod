@@ -7,6 +7,7 @@ replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.4.13
 	github.com/docker/distribution => github.com/distribution/distribution v2.7.1+incompatible
 	github.com/docker/docker => github.com/moby/moby v20.10.5+incompatible
+	github.com/emicklei/go-restful v2.9.5+incompatible => github.com/emicklei/go-restful v2.16.0+incompatible
 	github.com/emicklei/go-restful/v3 => github.com/emicklei/go-restful/v3 v3.9.0
 	golang.org/x/text => golang.org/x/text v0.3.7
 )
