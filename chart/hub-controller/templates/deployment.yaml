@@ -45,7 +45,7 @@ spec:
             - --extended-log-enabled={{ .Values.deploymentArgs.extendedLogEnabled }}
             - --tokenreview-enabled={{ .Values.deploymentArgs.tokenReviewEnabled }}
             - --token-issuer={{ .Values.deploymentArgs.tokenIssuer }}
-            - --landscaper-enabled={{ .Values.deploymentArgs.landscaperEnabled }}
+            - --landscaper-enabled=false
             {{- if .Values.auditLogConfig }}
             - --audit-log=true
             {{- end }}
