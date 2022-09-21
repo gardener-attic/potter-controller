@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pathlib
-import util
+import ci.util
 import os
 
 from github.util import GitHubRepositoryHelper
@@ -9,11 +9,11 @@ from github.util import GitHubRepositoryHelper
 OUTPUT_FILE_NAME = 'out'
 VERSION_FILE_NAME = 'VERSION'
 
-repo_owner_and_name = util.check_env('SOURCE_GITHUB_REPO_OWNER_AND_NAME')
-repo_dir = util.check_env('MAIN_REPO_DIR')
+repo_owner_and_name = ci.util.check_env('SOURCE_GITHUB_REPO_OWNER_AND_NAME')
+repo_dir = ci.util.check_env('MAIN_REPO_DIR')
 
-lint_path = util.check_env('LINT_PATH')
-backend_test_path = util.check_env('BACKEND_TEST_PATH')
+lint_path = ci.util.check_env('LINT_PATH')
+backend_test_path = ci.util.check_env('BACKEND_TEST_PATH')
 
 lint_path = pathlib.Path(lint_path).resolve()
 backend_test_path = pathlib.Path(backend_test_path).resolve()
@@ -29,7 +29,7 @@ version_file_path = repo_path / VERSION_FILE_NAME
 
 version_file_contents = version_file_path.read_text()
 
-cfg_factory = util.ctx().cfg_factory()
+cfg_factory = ci.util.ctx().cfg_factory()
 github_cfg = cfg_factory.github('github_com')
 
 github_repo_helper = GitHubRepositoryHelper(
@@ -55,7 +55,7 @@ try:
 except KeyError:
     print("No integration test output path found. Output will not be added to release")
 else:
-    integration_test_path = util.check_env('INTEGRATION_TEST_PATH')
+    integration_test_path = ci.util.check_env('INTEGRATION_TEST_PATH')
     integration_test_path = pathlib.Path(integration_test_path).resolve()
     integration_test_path = integration_test_path / OUTPUT_FILE_NAME
     gh_release.upload_asset(
