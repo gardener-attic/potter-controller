@@ -190,22 +190,5 @@ threads:
   clusterBomController: 10
   clusterBomStateController: 10
 
-landscaper:
-  registry: eu.gcr.io
-  repository: $landscaper_image_repo
-  tag: $landscaper_image_tag
-  imagePullPolicy: $image_pull_policy
-
-  registrySecrets: # contains optional oci secrets
-    blueprints: {}
-    #      <name>: <docker config json>
-    components: {}
-    #      <name>: <docker config json>
-
-  deployers: []
-  #  - container
-  #  - helm
-  #  - mock
-
 linkerd:
   enabled: false
