@@ -58,26 +58,3 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- join "," $ingress.names -}}
 {{- end -}}
-
-{{- define "landscaper-config" -}}
-apiVersion: config.landscaper.gardener.cloud/v1alpha1
-kind: LandscaperConfiguration
-
-registries:
-  components:
-  {{- if .Values.landscaper.registrySecrets.components }}
-    oci:
-      configFiles:
-      {{- range $key, $value := .Values.landscaper.registrySecrets.components }}
-      - /app/ls/registry/components/{{ $key }}
-      {{- end }}
-  {{- end }}
-  blueprints:
-    {{- if .Values.landscaper.registrySecrets.blueprints }}
-    oci:
-      configFiles:
-      {{- range $key, $value := .Values.landscaper.registrySecrets.blueprints }}
-      - /app/ls/registry/blueprints/{{ $key }}
-      {{- end }}
-    {{- end }}
-{{- end }}
