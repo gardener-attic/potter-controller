@@ -141,76 +141,17 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	if associatedObjects.clusterbomExists {
-		if util.HasAnnotation(&associatedObjects.clusterbom, util.AnnotationActionIgnoreKey, util.Deactivate) {
-			allItemsIgnored := true
-			for k, _ := range associatedObjects.deployItemList.Items {
-				next := &associatedObjects.deployItemList.Items[k]
-				if util.HasAnnotation(next, util.AnnotationStatusIgnoreKey, util.Ignore) &&
-					!util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Deactivate) &&
-					!util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Reactivate) {
-					continue
-				} else if util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Deactivate) &&
-					!util.HasAnnotation(next, util.AnnotationStatusIgnoreKey, util.Ignore) {
-					allItemsIgnored = false
-				} else {
-					util.AddAnnotation(next, util.AnnotationActionIgnoreKey, util.Deactivate)
-					util.RemoveAnnotation(next, util.AnnotationStatusIgnoreKey)
-					allItemsIgnored = false
-					if err = r.Update(ctx, next); err != nil {
-						return r.returnFailure(err)
-					}
-				}
-			}
-
-			if allItemsIgnored {
-				util.RemoveAnnotation(&associatedObjects.clusterbom, util.AnnotationActionIgnoreKey)
-				util.AddAnnotation(&associatedObjects.clusterbom, util.AnnotationStatusIgnoreKey, util.Ignore)
-				if err = r.Update(ctx, &associatedObjects.clusterbom); err != nil {
-					return r.returnFailure(err)
-				}
-				return r.returnSuccess()
-			} else {
-				return ctrl.Result{
-					Requeue:      true,
-					RequeueAfter: time.Second * 3,
-				}, nil
-			}
-		} else if util.HasAnnotation(&associatedObjects.clusterbom, util.AnnotationActionIgnoreKey, util.Reactivate) {
-			allItemsReactivated := true
-
-			for k, _ := range associatedObjects.deployItemList.Items {
-				next := &associatedObjects.deployItemList.Items[k]
-				if !util.HasAnnotation(next, util.AnnotationStatusIgnoreKey, util.Ignore) &&
-					!util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Deactivate) &&
-					!util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Reactivate) {
-					continue
-				} else if util.HasAnnotation(next, util.AnnotationActionIgnoreKey, util.Reactivate) &&
-					util.HasAnnotation(next, util.AnnotationStatusIgnoreKey, util.Ignore) {
-					allItemsReactivated = false
-				} else {
-					util.AddAnnotation(next, util.AnnotationActionIgnoreKey, util.Reactivate)
-					util.RemoveAnnotation(next, util.AnnotationStatusIgnoreKey)
-					allItemsReactivated = false
-					if err = r.Update(ctx, next); err != nil {
-						return r.returnFailure(err)
-					}
-				}
-			}
-			if allItemsReactivated {
-				util.RemoveAnnotation(&associatedObjects.clusterbom, util.AnnotationActionIgnoreKey)
-				util.RemoveAnnotation(&associatedObjects.clusterbom, util.AnnotationStatusIgnoreKey)
-				if err = r.Update(ctx, &associatedObjects.clusterbom); err != nil {
-					return r.returnFailure(err)
-				}
-				return r.returnSuccess()
-			} else {
-				return ctrl.Result{
-					Requeue:      true,
-					RequeueAfter: time.Second * 3,
-				}, nil
-			}
-		} else if util.HasAnnotation(&associatedObjects.clusterbom, util.AnnotationStatusIgnoreKey, util.Ignore) {
-			return r.returnSuccess()
+		d := &clusterbomDeactivator{}
+		stopReconcile, actionProgressing, err := d.handleDeactivationOrReactivation(ctx, associatedObjects, r)
+		if err != nil {
+			return r.returnFailure(err)
+		} else if actionProgressing {
+			return ctrl.Result{
+				Requeue:      true,
+				RequeueAfter: time.Second * 3,
+			}, nil
+		} else if stopReconcile {
+			r.returnSuccess()
 		}
 	}
 
