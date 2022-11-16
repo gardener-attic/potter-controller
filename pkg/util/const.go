@@ -58,6 +58,13 @@ const (
 
 	AnnotationKeyInstallationHash = "potter.gardener.cloud/installation-hash"
 
+	AnnotationActionIgnoreKey = "potter.gardener.cloud/action-ignore"
+	Deactivate                = "deactivate"
+	Reactivate                = "reactivate"
+
+	AnnotationStatusIgnoreKey = "potter.gardener.cloud/status-ignore"
+	Ignore                    = "ignore"
+
 	// keys
 	SecretValuesKey  = "secretValues"
 	KeyDeletionToken = "deletionToken"
