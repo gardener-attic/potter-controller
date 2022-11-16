@@ -144,6 +144,7 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		d := &clusterbomDeactivator{}
 		stopReconcile, actionProgressing, err := d.handleDeactivationOrReactivation(ctx, associatedObjects, r)
 		if err != nil {
+			log.Error(err, "error handling deactivation/reactivation of clusterbom")
 			return r.returnFailure(err)
 		} else if actionProgressing {
 			return ctrl.Result{
