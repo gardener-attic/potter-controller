@@ -37,3 +37,5 @@ __pycache__
 
 # others
 config/crd/bases/_.yaml
+
+.cache_ggshield
