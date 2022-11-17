@@ -153,9 +153,9 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			}, nil
 		} else if stopReconcile {
 			if err = d.deleteIfRequired(ctx, associatedObjects, r.Client); err != nil {
-				r.returnFailure(err)
+				return r.returnFailure(err)
 			}
-			r.returnSuccess()
+			return r.returnSuccess()
 		}
 	}
 

@@ -125,9 +125,9 @@ func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	} else if stopReconcile {
 		if err = d.deleteIfRequired(ctx, deployItem, r.crAndSecretClient); err != nil {
 			log.Error(err, "error deleting ignored deploy item")
-			r.returnFailure()
+			return r.returnFailure()
 		}
-		r.returnSuccess()
+		return r.returnSuccess()
 	}
 
 	deployData, err := deployutil.NewDeployData(deployItem)
