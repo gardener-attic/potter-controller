@@ -35,14 +35,12 @@ func (d *clusterbomDeactivator) deactivate(ctx context.Context, associatedObject
 			!util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Reactivate) {
 			// Item is deactivated
 			continue
-		} else if util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Deactivate) &&
-			!util.HasAnnotation(item, util.AnnotationStatusIgnoreKey, util.Ignore) {
+		} else if util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Deactivate) {
 			// Item is informed about deactivation, but has not yet confirmed
 			allItemsDeactivated = false
 		} else {
 			// Item needs to be informed about deactivation
 			util.AddAnnotation(item, util.AnnotationActionIgnoreKey, util.Deactivate)
-			util.RemoveAnnotation(item, util.AnnotationStatusIgnoreKey)
 			allItemsDeactivated = false
 			if err = r.Update(ctx, item); err != nil {
 				return false, false, err
@@ -76,14 +74,12 @@ func (d *clusterbomDeactivator) reactivate(ctx context.Context, associatedObject
 			!util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Reactivate) {
 			// Item is reactivated
 			continue
-		} else if util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Reactivate) &&
-			util.HasAnnotation(item, util.AnnotationStatusIgnoreKey, util.Ignore) {
+		} else if util.HasAnnotation(item, util.AnnotationActionIgnoreKey, util.Reactivate) {
 			// Item is informed about reactivation, but has not yet confirmed
 			allItemsReactivated = false
 		} else {
 			// Item needs to be informed about reactivation
 			util.AddAnnotation(item, util.AnnotationActionIgnoreKey, util.Reactivate)
-			util.RemoveAnnotation(item, util.AnnotationStatusIgnoreKey)
 			allItemsReactivated = false
 			if err = r.Update(ctx, item); err != nil {
 				return false, false, err
