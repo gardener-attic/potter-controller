@@ -44,3 +44,18 @@ func (d *deploymentDeactivator) reactivate(ctx context.Context, deployItem *v1al
 	// Reactivation done (nevertheless we stop the current reconcile here)
 	return true, nil
 }
+
+func (d *deploymentDeactivator) deleteIfRequired(ctx context.Context, deployItem *v1alpha1.DeployItem, r client.Client) error {
+	if deployItem.ObjectMeta.DeletionTimestamp != nil &&
+		util.HasAnnotation(deployItem, util.AnnotationStatusIgnoreKey, util.Ignore) &&
+		!util.HasAnnotation(deployItem, util.AnnotationActionIgnoreKey, util.Deactivate) &&
+		!util.HasAnnotation(deployItem, util.AnnotationActionIgnoreKey, util.Reactivate) {
+
+		deployItem.SetFinalizers(nil)
+		if err := r.Update(ctx, deployItem); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

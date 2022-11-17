@@ -8,7 +8,8 @@ import (
 
 type clusterbomDeactivator struct{}
 
-func (d *clusterbomDeactivator) handleDeactivationOrReactivation(ctx context.Context, associatedObjects *AssociatedObjects, r client.Client) (stopReconcile, actionProgressing bool, err error) {
+func (d *clusterbomDeactivator) handleDeactivationOrReactivation(ctx context.Context, associatedObjects *AssociatedObjects,
+	r client.Client) (stopReconcile, actionProgressing bool, err error) {
 	if util.HasAnnotation(&associatedObjects.clusterbom, util.AnnotationActionIgnoreKey, util.Deactivate) {
 		return d.deactivate(ctx, associatedObjects, r)
 
@@ -100,4 +101,30 @@ func (d *clusterbomDeactivator) reactivate(ctx context.Context, associatedObject
 		// Reactivation is progressing, re-check necessary
 		return false, true, nil
 	}
+}
+
+func (d *clusterbomDeactivator) deleteIfRequired(ctx context.Context, associatedObjects *AssociatedObjects, r client.Client) error {
+	clusterbom := associatedObjects.clusterbom
+	if clusterbom.ObjectMeta.DeletionTimestamp != nil &&
+		util.HasAnnotation(&clusterbom, util.AnnotationStatusIgnoreKey, util.Ignore) &&
+		!util.HasAnnotation(&clusterbom, util.AnnotationActionIgnoreKey, util.Deactivate) &&
+		!util.HasAnnotation(&clusterbom, util.AnnotationActionIgnoreKey, util.Reactivate) {
+		for k, _ := range associatedObjects.deployItemList.Items {
+			item := &associatedObjects.deployItemList.Items[k]
+			item.SetFinalizers(nil)
+			if err := r.Update(ctx, item); err != nil {
+				return err
+			}
+			if err := r.Delete(ctx, item); err != nil {
+				return err
+			}
+		}
+
+		clusterbom.SetFinalizers(nil)
+		if err := r.Update(ctx, &clusterbom); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

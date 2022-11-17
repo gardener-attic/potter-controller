@@ -123,6 +123,10 @@ func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Error(err, "error handling deactivation/reactivation of deployitem")
 		return r.returnFailure()
 	} else if stopReconcile {
+		if err = d.deleteIfRequired(ctx, deployItem, r.crAndSecretClient); err != nil {
+			log.Error(err, "error deleting ignored deploy item")
+			r.returnFailure()
+		}
 		r.returnSuccess()
 	}
 

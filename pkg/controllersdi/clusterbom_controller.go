@@ -142,7 +142,7 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	if associatedObjects.clusterbomExists {
 		d := &clusterbomDeactivator{}
-		stopReconcile, actionProgressing, err := d.handleDeactivationOrReactivation(ctx, associatedObjects, r)
+		stopReconcile, actionProgressing, err := d.handleDeactivationOrReactivation(ctx, associatedObjects, r.Client)
 		if err != nil {
 			log.Error(err, "error handling deactivation/reactivation of clusterbom")
 			return r.returnFailure(err)
@@ -152,6 +152,9 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 				RequeueAfter: time.Second * 3,
 			}, nil
 		} else if stopReconcile {
+			if err = d.deleteIfRequired(ctx, associatedObjects, r.Client); err != nil {
+				r.returnFailure(err)
+			}
 			r.returnSuccess()
 		}
 	}
