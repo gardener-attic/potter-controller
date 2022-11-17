@@ -152,8 +152,6 @@ func main() {
 
 	cbStateReconciler := setupClusterBomStateReconciler(mgr, uncachedClient, blockObject, avCheckConfig)
 
-	setupInstallationStateReconciler(mgr, uncachedClient, blockObject)
-
 	deploymentReconciler := setupDeploymentReconciler(mgr, appRepoClient, uncachedClient, blockObject, eventRecorder,
 		reconcileIntervalMinutes)
 
@@ -292,25 +290,6 @@ func setupClusterBomStateReconciler(mgr manager.Manager, uncachedClient synchron
 	}
 
 	return cbStateReconciler
-}
-
-func setupInstallationStateReconciler(mgr manager.Manager, uncachedClient synchronize.UncachedClient,
-	blockObject *synchronize.BlockObject) {
-	setupLog.V(util.LogLevelDebug).Info("Setup installation state reconciler")
-
-	installationStateReconciler := &controllersdi.InstallationStateReconciler{
-		Client:      mgr.GetClient(),
-		Log:         ctrl.Log.WithName("controllers").WithName("InstallationStateReconciler"),
-		Scheme:      mgr.GetScheme(),
-		BlockObject: blockObject,
-
-		UncachedClient: uncachedClient,
-	}
-
-	if err := installationStateReconciler.SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "InstallationStateReconciler")
-		os.Exit(1)
-	}
 }
 
 func setupDeploymentReconciler(mgr manager.Manager, appRepoClient client.Client, uncachedClient synchronize.UncachedClient,
