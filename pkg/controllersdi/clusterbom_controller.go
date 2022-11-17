@@ -196,13 +196,6 @@ func (r *ClusterBomReconciler) readAssociatedObjects(ctx context.Context, cluste
 		return nil, err
 	}
 
-	// read installations
-	err = r.List(ctx, &a.installationList, client.InNamespace(clusterbomKey.Namespace), client.MatchingLabels{hubv1.LabelClusterBomName: clusterbomKey.Name})
-	if err != nil {
-		log.Error(err, "Error listing installation items")
-		return nil, err
-	}
-
 	// read secrets for secret values
 	err = r.List(ctx, &a.secretList, client.InNamespace(clusterbomKey.Namespace),
 		client.MatchingLabels{hubv1.LabelClusterBomName: clusterbomKey.Name, hubv1.LabelPurpose: util.PurposeSecretValues})
