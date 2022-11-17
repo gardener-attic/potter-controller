@@ -8,6 +8,7 @@
 bin
 *.DS_Store
 venv
+.cache_ggshield
 
 # Test binary, build with `go test -c`
 *.test
