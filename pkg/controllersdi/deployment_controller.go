@@ -117,6 +117,19 @@ func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return r.logAndReturnHubFailure(ctx, deployutil.ReasonFailedFetchingObject, "Could not read deployment config", err)
 	}
 
+	d := &deploymentDeactivator{}
+	stopReconcile, err := d.handleDeactivationOrReactivation(ctx, deployItem, r.crAndSecretClient)
+	if err != nil {
+		log.Error(err, "error handling deactivation/reactivation of deployitem")
+		return r.returnFailure()
+	} else if stopReconcile {
+		if err = d.deleteIfRequired(ctx, deployItem, r.crAndSecretClient); err != nil {
+			log.Error(err, "error deleting ignored deploy item")
+			return r.returnFailure()
+		}
+		return r.returnSuccess()
+	}
+
 	deployData, err := deployutil.NewDeployData(deployItem)
 	if err != nil {
 		log.Error(err, "error unmarshaling data of deployitem")
