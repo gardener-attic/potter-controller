@@ -174,7 +174,6 @@ func (r *ClusterBomReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 type AssociatedObjects struct {
 	deployItemList   landscaper.DeployItemList
-	installationList landscaper.InstallationList
 	clusterbom       hubv1.ClusterBom
 	clusterbomExists bool
 	secretKey        *types.NamespacedName
@@ -252,21 +251,13 @@ func (r *ClusterBomReconciler) handleNormalClusterBom(ctx context.Context, a *As
 		// then exist.
 		log.V(util.LogLevelWarning).Info("Deleting deploy items associated with clusterboms because the secret of the target cluster does not exist")
 
-		if isLandscaperManagedClusterBom(&a.clusterbom) {
-			err := deleteInstallations(ctx, r.Client, &a.installationList)
-			if err != nil {
-				r.auditLogResult(ctx, auditMessage, false)
-				return r.returnFailure(err)
-			}
-		} else {
-			err := deleteDeployItems(ctx, r.Client, &a.deployItemList)
-			if err != nil {
-				r.auditLogResult(ctx, auditMessage, false)
-				return r.returnFailure(err)
-			}
+		err := deleteDeployItems(ctx, r.Client, &a.deployItemList)
+		if err != nil {
+			r.auditLogResult(ctx, auditMessage, false)
+			return r.returnFailure(err)
 		}
 
-		err := adjustClusterBomStatusForNotExistingTargetCluster(ctx, r.Client, &a.clusterbom, a.secretKey, r.AVCheckConfig)
+		err = adjustClusterBomStatusForNotExistingTargetCluster(ctx, r.Client, &a.clusterbom, a.secretKey, r.AVCheckConfig)
 		if err != nil {
 			r.auditLogResult(ctx, auditMessage, false)
 			return r.returnFailure(err)
@@ -278,26 +269,15 @@ func (r *ClusterBomReconciler) handleNormalClusterBom(ctx context.Context, a *As
 		return ctrl.Result{Requeue: true}, nil
 	}
 
-	// For all deploy items or installations that are not in the clusterbom anymore, set operation "remove"
+	// For all deploy items that are not in the clusterbom anymore, set operation "remove"
 	var err error
-	if isLandscaperManagedClusterBom(&a.clusterbom) {
-		auditMessage, err = r.deleteOrphanedInstallations(ctx, a, auditMessage)
-		if err != nil {
-			return r.returnFailure(err)
-		}
-	} else {
-		auditMessage, err = r.deleteOrphanedDeployItems(ctx, a, auditMessage)
-		if err != nil {
-			return r.returnFailure(err)
-		}
+	auditMessage, err = r.deleteOrphanedDeployItems(ctx, a, auditMessage)
+	if err != nil {
+		return r.returnFailure(err)
 	}
 
-	// For all applicationconfigs of the clusterbom, create or update the corresponding installations or deploy items
-	if isLandscaperManagedClusterBom(&a.clusterbom) {
-		err = r.handleAppConfigsForInstallations(ctx, a, auditMessage)
-	} else {
-		err = r.handleAppConfigsForDeployItems(ctx, a, auditMessage)
-	}
+	// For all applicationconfigs of the clusterbom, create or update the corresponding deploy items
+	err = r.handleAppConfigsForDeployItems(ctx, a, auditMessage)
 
 	if err != nil {
 		return r.returnFailure(err)
@@ -338,70 +318,6 @@ func (r *ClusterBomReconciler) handleReconcileAnnotation(ctx context.Context, cl
 
 		tmpKey := util.GetKey(clusterbom)
 		return r.removeReconcileAnnotation(ctx, tmpKey)
-	}
-
-	return nil
-}
-
-func (r *ClusterBomReconciler) handleAppConfigsForInstallations(ctx context.Context, a *AssociatedObjects,
-	auditMessage *auditlog.AuditMessageInfo) error {
-	log := util.GetLoggerFromContext(ctx)
-
-	for i := range a.clusterbom.Spec.ApplicationConfigs {
-		appconfig := &a.clusterbom.Spec.ApplicationConfigs[i]
-
-		// Search the DeployItem corresponding to the the ApplicationConfig
-		var installation *landscaper.Installation
-		installation = findInstallationInList(&a.installationList, appconfig.ID)
-
-		// Create or update installation.
-		if installation == nil {
-			if auditMessage == nil {
-				auditMessage = r.auditLog(ctx, auditlog.CreateOrUpdate, a)
-			}
-
-			installation = &landscaper.Installation{}
-
-			installationFactory := InstallationFactory{}
-			if err2 := installationFactory.copyAppConfigToInstallation(appconfig, installation, &a.clusterbom); err2 != nil {
-				log.Error(err2, "error copying appconfig to new installation", util.LogKeyInstallationName, installation.Name)
-				return err2
-			}
-
-			err2 := r.createInstallation(ctx, installation)
-			if err2 != nil {
-				r.auditLogResult(ctx, auditMessage, false)
-				return err2
-			}
-		} else {
-			isEqual, err := isEqualConfigForInstallation(&a.clusterbom, appconfig, installation)
-			if err != nil {
-				log.Error(err, "error comparing appconfig with installation", util.LogKeyInstallationName, installation.Name)
-				return err
-			}
-
-			if !isEqual {
-				log.V(util.LogLevelDebug).Info("Updating installation item", util.LogKeyInstallationName, installation)
-
-				if auditMessage == nil {
-					auditMessage = r.auditLog(ctx, auditlog.CreateOrUpdate, a)
-				}
-
-				installationFactory := InstallationFactory{}
-				if err2 := installationFactory.copyAppConfigToInstallation(appconfig, installation, &a.clusterbom); err2 != nil {
-					log.Error(err2, "error copying appconfig to installation", util.LogKeyInstallationName, installation.Name)
-					return err2
-				}
-
-				if err2 := r.updateInstallation(ctx, installation, &a.clusterbom); err2 != nil {
-					r.auditLogResult(ctx, auditMessage, false)
-					return err2
-				}
-			} else {
-				log.V(util.LogLevelDebug).Info("No update of the installation required (unchanged)",
-					util.LogKeyInstallationName, installation.Name)
-			}
-		}
 	}
 
 	return nil
@@ -479,7 +395,7 @@ func (r *ClusterBomReconciler) handleClusterBomMarkedForDeletion(ctx context.Con
 		return r.returnSuccess()
 	}
 
-	if len(a.deployItemList.Items) == 0 && len(a.installationList.Items) == 0 {
+	if len(a.deployItemList.Items) == 0 {
 		// The purpose of the finalizer in a clusterbom is to postpone the deletion until all hdcs have been removed.
 		// This goal is reached here. We remove the finalizer, so that the system will delete the clusterbom.
 		err := r.removeFinalizerFromClusterbom(ctx, a)
@@ -489,23 +405,12 @@ func (r *ClusterBomReconciler) handleClusterBomMarkedForDeletion(ctx context.Con
 		return r.returnSuccess()
 	}
 
-	// Delete installation
-	err := deleteInstallations(ctx, r.Client, &a.installationList)
-	if err != nil {
-		return r.returnFailure(err)
-	}
-
 	// Delete deploy items
 	auditMessage := r.auditLog(ctx, auditlog.Delete, a)
-	err = deleteDeployItems(ctx, r.Client, &a.deployItemList)
+	err := deleteDeployItems(ctx, r.Client, &a.deployItemList)
 	r.auditLogResult(ctx, auditMessage, err == nil)
 	if err != nil {
 		return r.returnFailure(err)
-	}
-
-	if isLandscaperManagedClusterBom(&a.clusterbom) {
-		// we need to recheck because we are not informed about installation deletion
-		return r.returnRetry()
 	}
 
 	// retry will be invoked by the state controller
@@ -547,19 +452,14 @@ func (r *ClusterBomReconciler) handleClusterBomDoesNotExist(ctx context.Context,
 	log := util.GetLoggerFromContext(ctx)
 	log.V(util.LogLevelWarning).Info("Handling clusterbom that does not exist")
 
-	if len(a.deployItemList.Items) == 0 && len(a.installationList.Items) == 0 {
+	if len(a.deployItemList.Items) == 0 {
 		// No clusterbom, no deploy items. Nothing to do.
 		return r.returnSuccess()
 	}
 
 	// Cluster exists
-	log.V(util.LogLevelWarning).Info("Clusterbom was deleted. Marking all deploy items or installations for deletion")
+	log.V(util.LogLevelWarning).Info("Clusterbom was deleted. Marking all deploy items for deletion")
 	err := deleteDeployItems(ctx, r.Client, &a.deployItemList)
-	if err != nil {
-		return r.returnFailure(err)
-	}
-
-	err = deleteInstallations(ctx, r.Client, &a.installationList)
 	if err != nil {
 		return r.returnFailure(err)
 	}
@@ -633,32 +533,6 @@ func (r *ClusterBomReconciler) copyAppConfigToDeployItem(appconfig *hubv1.Applic
 	return nil
 }
 
-func (r *ClusterBomReconciler) updateInstallation(ctx context.Context, installation *landscaper.Installation,
-	clusterBom *hubv1.ClusterBom) error {
-	log := util.GetLoggerFromContext(ctx)
-
-	util.AddAnnotation(installation, landscaper.OperationAnnotation, string(landscaper.ForceReconcileOperation))
-
-	log.V(util.LogLevelDebug).Info("Updating existing installation", util.LogKeyInstallationName, installation.Name, "installation", installation)
-	err := r.Update(ctx, installation)
-	if err != nil {
-		if util.IsConcurrentModificationErr(err) {
-			if r.AVCheckConfig != nil && clusterBom.Name == r.AVCheckConfig.BomName && clusterBom.Namespace == r.AVCheckConfig.Namespace {
-				log.V(util.LogLevelDebug).Info("Problem updating status of av check hdc")
-				return nil
-			}
-
-			log.V(util.LogLevelWarning).Info("Warning updating status of installation due to parallel modification: " + err.Error())
-			return err
-		}
-
-		log.Error(err, "Error updating existing installation", util.LogKeyInstallationName, installation.Name)
-		return err
-	}
-
-	return nil
-}
-
 // Updates the given *DeployItem* and writes the result to the cluster.
 // Automatically increases the CurrentOperation.Number and .Timestamp.
 func (r *ClusterBomReconciler) updateDeployItem(ctx context.Context, deployItem *landscaper.DeployItem,
@@ -699,18 +573,6 @@ func (r *ClusterBomReconciler) createDeployItem(ctx context.Context, deployItem 
 	return nil
 }
 
-func (r *ClusterBomReconciler) createInstallation(ctx context.Context, installation *landscaper.Installation) error { // nolint
-	log := util.GetLoggerFromContext(ctx)
-
-	log.V(util.LogLevelDebug).Info("Creating deploy item", util.LogKeyInstallationName, installation.Name, "installation", installation)
-	err := r.Create(ctx, installation)
-	if err != nil {
-		log.Error(err, "Error creating installation", util.LogKeyInstallationName, installation.Name)
-		return err
-	}
-	return nil
-}
-
 func (r *ClusterBomReconciler) deleteOrphanedDeployItems(ctx context.Context, a *AssociatedObjects, auditMsg *auditlog.AuditMessageInfo) (*auditlog.AuditMessageInfo, error) {
 	for i := range a.deployItemList.Items {
 		deployItem := &a.deployItemList.Items[i]
@@ -721,26 +583,6 @@ func (r *ClusterBomReconciler) deleteOrphanedDeployItems(ctx context.Context, a 
 			}
 
 			err := deleteDeployItem(ctx, r.Client, deployItem)
-			r.auditLogResult(ctx, auditMsg, err == nil)
-			if err != nil {
-				return auditMsg, err
-			}
-		}
-	}
-	return auditMsg, nil
-}
-
-func (r *ClusterBomReconciler) deleteOrphanedInstallations(ctx context.Context, a *AssociatedObjects,
-	auditMsg *auditlog.AuditMessageInfo) (*auditlog.AuditMessageInfo, error) {
-	for i := range a.installationList.Items {
-		installation := &a.installationList.Items[i]
-		appConfig := findAppDeploymentConfigInList(a.clusterbom.Spec.ApplicationConfigs, util.GetAppConfigIDFromInstallationKey(util.GetKey(installation)))
-		if appConfig == nil {
-			if auditMsg == nil {
-				auditMsg = r.auditLog(ctx, auditlog.CreateOrUpdate, a)
-			}
-
-			err := deleteInstallation(ctx, r.Client, installation)
 			r.auditLogResult(ctx, auditMsg, err == nil)
 			if err != nil {
 				return auditMsg, err

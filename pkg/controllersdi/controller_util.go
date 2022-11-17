@@ -20,38 +20,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func deleteInstallations(ctx context.Context, cli client.Client, installationList *landscaper.InstallationList) error {
-	for i := range installationList.Items {
-		installation := &installationList.Items[i]
-
-		ctx, _ = util.EnrichContextAndLogger(ctx, util.LogKeyInstallationName, util.GetKey(installation))
-
-		err := deleteInstallation(ctx, cli, installation)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func deleteInstallation(ctx context.Context, cli client.Client, installation *landscaper.Installation) error {
-	logger := util.GetLoggerFromContext(ctx)
-
-	if !installation.ObjectMeta.DeletionTimestamp.IsZero() {
-		return nil
-	}
-
-	logger.V(util.LogLevelDebug).Info("Deleting installation")
-	err := cli.Delete(ctx, installation)
-	if err != nil {
-		logger.Error(err, "Error deleting installation")
-		return err
-	}
-
-	return nil
-}
-
 func deleteDeployItems(ctx context.Context, cli client.Client, deployItemList *landscaper.DeployItemList) error {
 	for i := range deployItemList.Items {
 		deploymentItem := &deployItemList.Items[i]
@@ -69,15 +37,10 @@ func deleteDeployItems(ctx context.Context, cli client.Client, deployItemList *l
 }
 
 // Deletes a deploy item.
-// Exception: does not delete the deploy item if it is landscaper managed.
 func deleteDeployItem(ctx context.Context, cli client.Client, deployItem *landscaper.DeployItem) error {
 	logger := util.GetLoggerFromContext(ctx)
 
 	if !deployItem.ObjectMeta.DeletionTimestamp.IsZero() {
-		return nil
-	}
-
-	if isLandscaperManagedDeployItem(deployItem) {
 		return nil
 	}
 
@@ -240,16 +203,6 @@ func findDeployItemInList(deployItems *landscaper.DeployItemList, id string) *la
 	return nil
 }
 
-func findInstallationInList(installations *landscaper.InstallationList, appID string) *landscaper.Installation {
-	for i := range installations.Items {
-		installation := &installations.Items[i]
-		if util.HasLabel(installation, hubv1.LabelApplicationConfigID, appID) {
-			return installation
-		}
-	}
-	return nil
-}
-
 func findAppDeploymentConfigInList(applicationConfigs []hubv1.ApplicationConfig, id string) *hubv1.ApplicationConfig {
 	for i := range applicationConfigs {
 		appConfig := applicationConfigs[i]
@@ -258,21 +211,6 @@ func findAppDeploymentConfigInList(applicationConfigs []hubv1.ApplicationConfig,
 		}
 	}
 	return nil
-}
-
-func isEqualConfigForInstallation(clusterBom *hubv1.ClusterBom, appConfig *hubv1.ApplicationConfig, installation *landscaper.Installation) (bool, error) {
-	installationFactory := InstallationFactory{}
-
-	newInstallation := &landscaper.Installation{}
-	err := installationFactory.copyAppConfigToInstallation(appConfig, newInstallation, clusterBom)
-	if err != nil {
-		return false, err
-	}
-
-	oldHash, _ := util.GetAnnotation(installation, util.AnnotationKeyInstallationHash)
-	newHash, _ := util.GetAnnotation(newInstallation, util.AnnotationKeyInstallationHash)
-
-	return oldHash == newHash, nil
 }
 
 func isEqualConfig(appConfig *hubv1.ApplicationConfig, deployItem *landscaper.DeployItem) (bool, error) {

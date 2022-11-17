@@ -20,10 +20,6 @@ func CreateDeployItemName(clusterBomName, appID string) string {
 	return clusterBomName + Separator + appID
 }
 
-func CreateInstallationName(clusterBomName, appID string) string {
-	return clusterBomName + DoubleSeparator + appID
-}
-
 func CreateSecretName(clusterBomName, appConfigID string) string {
 	uniqueString := string(uuid.NewUUID())
 	return clusterBomName + Separator + appConfigID + Separator + uniqueString
@@ -52,24 +48,6 @@ func GetClusterBomKeyFromDeployItem(deployItem *v1alpha1.DeployItem) *types.Name
 func GetAppConfigIDFromDeployItem(deployItem *v1alpha1.DeployItem) string {
 	name, _ := GetLabel(deployItem, hubv1.LabelApplicationConfigID)
 	return name
-}
-
-func GetAppConfigIDFromInstallation(installation *v1alpha1.Installation) string {
-	name, _ := GetLabel(installation, hubv1.LabelApplicationConfigID)
-	return name
-}
-
-func GetAppConfigIDFromInstallationKey(installationKey *types.NamespacedName) string {
-	index := strings.LastIndex(installationKey.Name, DoubleSeparator)
-	return installationKey.Name[index+len(DoubleSeparator):]
-}
-
-func GetClusterBomKeyFromInstallationKey(installationKey *types.NamespacedName) *types.NamespacedName {
-	index := strings.LastIndex(installationKey.Name, DoubleSeparator)
-	return &types.NamespacedName{
-		Namespace: installationKey.Namespace,
-		Name:      installationKey.Name[:index],
-	}
 }
 
 func GetClusterBomKeyFromClusterBomOrDeployItem(clusterBom *hubv1.ClusterBom, deployItem *v1alpha1.DeployItem) *types.NamespacedName {
