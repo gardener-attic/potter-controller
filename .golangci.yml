@@ -1,26 +1,55 @@
 # This is the configuration file for golangci-lint.
+# Options for analysis running.
+run:
+  skip-files:
+    - main.go
+
 linters-settings:
-  govet:
-    check-shadowing: true
   goconst:
+    # Minimal length of string constant.
+    # Default: 3
     min-len: 2
+    # Minimum occurrences of constant string count to trigger issue.
+    # Default: 3
     min-occurrences: 3
-  misspell:
-    locale: US
   goimports:
     local-prefixes: github.com/gardener/potter-controller
   gocritic:
+    # Which checks should be disabled; can't be combined with 'enabled-checks'.
+    # Default: []
+    disabled-checks:
+      - httpNoBody
+      - redundantSprint
+      - deferInLoop
+      - appendAssign
+      - stringXbytes
+      - dynamicFmtString
+      - ioutilDeprecated
+      - ifElseChain
+      - whyNoLint
+      - unnamedResult
+
+    # Enable multiple checks by tags, run `GL_DEBUG=gocritic golangci-lint run` to see all tags and checks.
+    # See https://github.com/go-critic/go-critic#usage -> section "Tags".
+    # Default: []
     enabled-tags:
       - diagnostic
+      - style
+      - performance
       - experimental
       - opinionated
-      - performance
-      - style
+      
     disabled-checks:
       - wrapperFunc
       - dupImport # https://github.com/go-critic/go-critic/issues/845
       - ifElseChain
       - unnamedResult
+  govet:
+    # Report about shadowed variables.
+    # Default: false
+    check-shadowing: true
+  misspell:
+    locale: US
 
 linters:
   # For a list of all supported linters, go here: https://github.com/golangci/golangci-lint#supported-linters
@@ -68,10 +97,6 @@ linters:
     #- maligned
     #- prealloc
     #- wsl
-
-run:
-  skip-files:
-    - main.go
 
 issues:
   exclude-rules:
