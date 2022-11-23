@@ -78,7 +78,7 @@ linters:
     - goconst
     - gocritic
     #- goimports
-    - golint
+    #- golint
     #- gosec
     - gosimple
     - govet
@@ -87,7 +87,7 @@ linters:
     - misspell
     - nakedret
     - scopelint
-    - staticcheck
+    #- staticcheck
     - structcheck
     - stylecheck
     - typecheck
@@ -95,7 +95,7 @@ linters:
     - unparam
     - unused
     - varcheck
-    - whitespace
+    #- whitespace
 
     # Don't enable
     #- depguard
