@@ -38,7 +38,6 @@ linters-settings:
       - stringXbytes
       - dynamicFmtString
       - ioutilDeprecated
-      - ifElseChain
       - whyNoLint
 
     # Enable multiple checks by tags, run `GL_DEBUG=gocritic golangci-lint run` to see all tags and checks.
