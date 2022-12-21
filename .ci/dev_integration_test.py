@@ -34,12 +34,6 @@ hub_kubeconfig = os.path.join(
     "integration_test.py"
 )
 
-####################################
-# TODO: temporarily disable int-tests
-####################################
-os._exit(os.EX_OK)
-####################################
-
 command = [hub_kubeconfig, "--namespace", "release-test"]
 
 result = subprocess.run(command)

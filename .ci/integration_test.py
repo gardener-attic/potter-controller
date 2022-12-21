@@ -65,7 +65,10 @@ try:
     # check if path var is set
     integration_test_path
 except NameError:
-    run = run(command)
+    #run = run(command)
+    print("temp disabled")
+    run = "temp disabled"
+
 else:
     output_path = os.path.join(root_path, integration_test_path, "out")
 
