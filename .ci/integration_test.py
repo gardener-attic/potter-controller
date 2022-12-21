@@ -66,9 +66,7 @@ try:
     integration_test_path
 except NameError:
     #run = run(command)
-    print("temp disabled")
-    run = "temp disabled"
-
+    run = print("temp disabled")
 else:
     output_path = os.path.join(root_path, integration_test_path, "out")
 
