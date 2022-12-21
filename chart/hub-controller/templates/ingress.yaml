@@ -33,7 +33,9 @@ spec:
         {{- range .Values.ingress.default.paths }}
         - path: {{ .path }}
           backend:
-            serviceName: {{ $fullName }}
-            servicePort: {{ .servicePort }}
+            service:
+              name: {{ $fullName }}
+              port:
+                number: {{ .servicePort }}
         {{- end }}
 {{- end }}
