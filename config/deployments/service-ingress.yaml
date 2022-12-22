@@ -33,5 +33,7 @@ spec:
         paths:
           - path: /checkClusterBom
             backend:
-              serviceName: hub-service
-              servicePort: 80
+              service:
+                name: hub-service
+                port:
+                  number: 80
