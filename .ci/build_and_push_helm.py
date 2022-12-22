@@ -23,7 +23,9 @@ def uploadFolder(packagedChartsDir, bucketname):
         bucket = client.get_bucket(bucketname)
         testfile = bucket.blob(f)
         testfile.upload_from_filename(os.path.join(packagedChartsDir, f))
-
+    
+    print(f"Uploaded to bucket {bucketname}")
+        
 def runHelmIndex(packagedChartsDir, bucketname):
     """ Build index.yaml for the directory *packagedChartsDir* and write the index file into this directory. """
     print("==== Building index.yaml for directory", packagedChartsDir, "====")
