@@ -60,7 +60,7 @@ command = ["go", "run", "main.go",
            "-test-prefix", test_prefix,
            "-test-type", test_type]
 # TODO: temp disablbe int tests
-# command = ["go", "version"]
+command = ["go", "version"]
 
 print(f"Running integration test with command: {' '.join(command)}")
 try:
