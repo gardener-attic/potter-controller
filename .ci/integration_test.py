@@ -29,7 +29,7 @@ except KeyError:
           "The output of the integration test won't be saved in a file.")
 
 factory = ctx().cfg_factory()
-landscape_kubeconfig = factory.kubernetes("garden-" + landscape + "-virtual")
+landscape_kubeconfig = factory.kubernetes("potter-cluster-robot-" + landscape)
 
 landscape_kubeconfig_name = "landscape_kubeconfig"
 landscape_kubeconfig_path = os.path.join(root_path, source_path,
@@ -60,7 +60,7 @@ command = ["go", "run", "main.go",
            "-test-prefix", test_prefix,
            "-test-type", test_type]
 # TODO: temp disablbe int tests
-command = ["go", "version"]
+# command = ["go", "version"]
 
 print(f"Running integration test with command: {' '.join(command)}")
 try:
