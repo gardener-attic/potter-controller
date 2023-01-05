@@ -260,17 +260,27 @@ metadata:
 
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: app-hub-controller
+  namespace: default
+  annotations:
+    kubernetes.io/service-account.name: app-hub-controller
+type: kubernetes.io/service-account-token
+
+---
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: app-hub-controller2
   namespace: default # TODO edit this namespace
 
-
-#      - create
-#      - delete
-#      - deletecollection
-#      - get
-#      - list
-#      - patch
-#      - update
-#      - watch
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-hub-controller2
+  namespace: default
+  annotations:
+    kubernetes.io/service-account.name: app-hub-controller2
+type: kubernetes.io/service-account-token
