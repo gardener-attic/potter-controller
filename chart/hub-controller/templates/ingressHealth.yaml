@@ -16,6 +16,7 @@ metadata:
     dns.gardener.cloud/dnsnames: {{ .Values.ingress.host }}
     {{- end }}
 spec:
+  ingressClassName: nginx
   {{- if .Values.ingress.tlsEnabled }}
   tls:
   - hosts:
