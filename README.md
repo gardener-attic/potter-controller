@@ -1,3 +1,6 @@
+| :exclamation: This project is not maintained anymore and will be archived soon. |
+|---------------------------------------------------------------------------------|
+
 # Potter Controller
 #### Please note: This repository and the related documentation is very much work-in-progress, so expect to find unfinished work ahead!
 
